@@ -434,11 +434,13 @@ function drawConstellations() {
       const anchor = c.pts.reduce((best, p) => p.r > best.r ? p : best, c.pts[0]);
       ctx.save();
       ctx.globalAlpha = c.labelAlpha;
-      ctx.font        = '10px Georgia, serif';
-      ctx.fillStyle   = 'rgba(200,180,255,1)';
-      ctx.letterSpacing = '2px';
+      ctx.font        = 'italic 12px Georgia, serif';
+      ctx.fillStyle   = 'rgba(232,180,248,1)';
+      ctx.shadowBlur  = 10;
+      ctx.shadowColor = 'rgba(200,140,255,0.8)';
+      ctx.letterSpacing = '3px';
       ctx.textAlign   = 'center';
-      ctx.fillText(c.name.toUpperCase(), anchor.x, anchor.y - 14);
+      ctx.fillText('✦ Kimberlly ✦', anchor.x, anchor.y - 16);
       ctx.restore();
     }
   });
