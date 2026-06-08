@@ -125,17 +125,20 @@
   }
   .btn:hover { background: rgba(180,140,255,0.15); border-color: rgba(180,140,255,0.9); color: #fff; box-shadow: 0 0 20px rgba(180,140,255,0.3); }
 
-  .shooting-star { position: fixed; width: 2px; height: 2px; background: white; border-radius: 50%; pointer-events: none; z-index: 0; }
+  canvas#fxCanvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2; pointer-events: none;
+  }
 
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes rotate { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
-  @keyframes shootAnim { 0% { opacity: 1; transform: translate(0,0) scaleX(1); } 100% { opacity: 0; transform: translate(200px, 120px) scaleX(40); } }
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(30px);  } to { opacity: 1; transform: translateY(0); } }
+  @keyframes rotate   { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
+<canvas id="fxCanvas"></canvas>
 
 <div class="scene">
 
@@ -184,31 +187,264 @@
     <p>"Você é a razão pela qual eu olho pro céu com gratidão — não pelas estrelas, mas porque é o mesmo céu que cobre você."</p>
   </div>
 
-  <button class="btn" onclick="shootStars()">✦ Enviar estrelas cadentes</button>
+  <button class="btn">✦ Enviar estrelas cadentes</button>
 </div>
 
 <script>
 /* ---- STARFIELD ---- */
 const canvas = document.getElementById('stars');
 const ctx = canvas.getContext('2d');
-let W, H, starsArr = [];
+let W, H, starsArr = [], constellations = [];
+let skyAngle = 0;
+const SKY_SPEED = 0.000018; // radianos por frame — rotação muito suave
+
 function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 function initStars() {
   starsArr = [];
-  for (let i = 0; i < 300; i++) starsArr.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.4+0.2, alpha: Math.random(), speed: Math.random()*0.008+0.002, dir: Math.random()>0.5?1:-1 });
+  // estrelas geradas em raio maior que a tela para cobrir cantos ao girar
+  const R = Math.hypot(window.innerWidth, window.innerHeight) * 0.7;
+  for (let i = 0; i < 360; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = Math.random() * R;
+    starsArr.push({
+      x: Math.cos(angle) * dist,  // coordenadas relativas ao centro
+      y: Math.sin(angle) * dist,
+      r: Math.random()*1.4+0.2,
+      alpha: Math.random(),
+      speed: Math.random()*0.008+0.002,
+      dir: Math.random()>0.5?1:-1
+    });
+  }
 }
 function drawStars() {
   ctx.clearRect(0,0,W,H);
+  skyAngle += SKY_SPEED;
+
+  ctx.save();
+  // translada pro centro, gira, volta
+  ctx.translate(W/2, H/2);
+  ctx.rotate(skyAngle);
+
   starsArr.forEach(s => {
     s.alpha += s.speed*s.dir;
     if (s.alpha>=1||s.alpha<=0.1) s.dir*=-1;
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
     ctx.fillStyle=`rgba(255,255,255,${s.alpha})`; ctx.fill();
   });
+
+  ctx.restore();
+
+  if (typeof drawConstellations === 'function') drawConstellations();
   requestAnimationFrame(drawStars);
 }
 resize(); initStars(); drawStars();
-window.addEventListener('resize', ()=>{ resize(); initStars(); });
+window.addEventListener('resize', ()=>{ resize(); initStars(); initConstellations(); });
+
+/* ---- CONSTELAÇÕES ---- */
+// Definidas em coordenadas normalizadas [0..1, 0..1]
+// edges = pares de índices de estrelas
+const CONSTELLATION_DEFS = [
+  {
+    name: 'Orion',
+    // Ombros, cinturão, pés, cabeça
+    stars: [
+      [0.08, 0.18], // 0 Betelgeuse
+      [0.19, 0.15], // 1 Bellatrix
+      [0.10, 0.32], // 2 Cinturão E
+      [0.13, 0.30], // 3 Cinturão C
+      [0.16, 0.28], // 4 Cinturão D
+      [0.07, 0.42], // 5 Rigel
+      [0.20, 0.40], // 6 Saiph
+      [0.13, 0.12], // 7 Cabeça
+    ],
+    edges: [[0,1],[0,2],[1,4],[2,3],[3,4],[0,5],[1,6],[5,6],[7,0],[7,1]],
+  },
+  {
+    name: 'Cassiopeia',
+    stars: [
+      [0.72, 0.08],
+      [0.78, 0.13],
+      [0.84, 0.08],
+      [0.89, 0.13],
+      [0.95, 0.08],
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4]],
+  },
+  {
+    name: 'Cruz do Sul',
+    stars: [
+      [0.82, 0.72], // topo
+      [0.82, 0.84], // base
+      [0.76, 0.78], // esquerda
+      [0.88, 0.78], // direita
+      [0.84, 0.74], // pequena extra
+    ],
+    edges: [[0,1],[2,3],[0,4]],
+  },
+  {
+    name: 'Escorpião',
+    stars: [
+      [0.55, 0.60],
+      [0.58, 0.65],
+      [0.60, 0.70],
+      [0.57, 0.75],
+      [0.53, 0.78],
+      [0.50, 0.80],
+      [0.48, 0.78],
+      [0.50, 0.74],
+      [0.52, 0.70],
+      [0.54, 0.64],
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,0]],
+  },
+  {
+    name: 'Lira',
+    stars: [
+      [0.30, 0.55], // Vega
+      [0.34, 0.60],
+      [0.36, 0.65],
+      [0.30, 0.65],
+      [0.28, 0.60],
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4],[4,0],[1,4],[2,3]],
+  },
+  {
+    name: 'Coroa Boreal',
+    stars: [
+      [0.62, 0.25],
+      [0.65, 0.22],
+      [0.68, 0.21],
+      [0.71, 0.22],
+      [0.74, 0.25],
+      [0.77, 0.29],
+      [0.59, 0.29],
+    ],
+    edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[0,6]],
+  },
+];
+
+function initConstellations() {
+  constellations = CONSTELLATION_DEFS.map(def => {
+    const seed = def.name.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+    const rng  = (n) => ((Math.sin(seed * n * 9.301 + 0.7) * 0.5 + 0.5));
+
+    return {
+      ...def,
+      // coordenadas relativas ao centro da tela (como as estrelas)
+      pts: def.stars.map((s, i) => ({
+        x: (s[0] - 0.5) * W,
+        y: (s[1] - 0.5) * H,
+        r:   1.2 + rng(i + 1) * 1.4,
+        alpha: 0,
+        twinkle: rng(i+7) * 0.018 + 0.005,
+        tdir: rng(i+3) > 0.5 ? 1 : -1,
+      })),
+      lineAlpha: 0,
+      labelAlpha: 0,
+      delay: rng(1) * 6,
+      born: performance.now() / 1000,
+      linePulse: 0,
+      linePulseDir: 1,
+    };
+  });
+}
+
+initConstellations();
+
+function drawConstellations() {
+  const now = performance.now() / 1000;
+
+  // aplica o mesmo transform do starfield — já estamos dentro do save/restore
+  // mas drawConstellations é chamado FORA do ctx.save do drawStars,
+  // então precisamos replicar o transform aqui
+  ctx.save();
+  ctx.translate(W/2, H/2);
+  ctx.rotate(skyAngle);
+
+  constellations.forEach(c => {
+    const age = now - c.born - c.delay;
+    if (age < 0) return;
+
+    const targetLine = Math.min(1, age / 4);
+    c.lineAlpha += (targetLine * 0.12 - c.lineAlpha) * 0.015;
+
+    c.linePulse += 0.004 * c.linePulseDir;
+    if (c.linePulse > 1 || c.linePulse < 0) c.linePulseDir *= -1;
+    const pulseA = c.lineAlpha * (0.12 + c.linePulse * 0.06);
+
+    const targetLabel = age > 6 ? Math.min(1, (age - 6) / 3) : 0;
+    c.labelAlpha += (targetLabel * 0.35 - c.labelAlpha) * 0.012;
+
+    // ---- linhas ----
+    c.edges.forEach(([a, b]) => {
+      const p1 = c.pts[a], p2 = c.pts[b];
+      const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+      grad.addColorStop(0,   `rgba(180,150,255,${pulseA})`);
+      grad.addColorStop(0.5, `rgba(200,180,255,${pulseA * 1.4})`);
+      grad.addColorStop(1,   `rgba(160,130,240,${pulseA})`);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = 0.7;
+      ctx.stroke();
+    });
+
+    // ---- estrelas da constelação ----
+    c.pts.forEach((p, i) => {
+      const starAge = age - i * 0.3;
+      if (starAge < 0) return;
+      const targetA = Math.min(1, starAge / 2);
+      p.alpha += (targetA - p.alpha) * 0.02;
+
+      p.alpha += p.twinkle * p.tdir;
+      if (p.alpha >= 1)   { p.alpha = 1;   p.tdir = -1; }
+      if (p.alpha <= 0.3) { p.alpha = 0.3; p.tdir =  1; }
+
+      const a = Math.min(1, p.alpha);
+
+      const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
+      halo.addColorStop(0,   `rgba(200,170,255,${a * 0.5})`);
+      halo.addColorStop(0.4, `rgba(180,140,255,${a * 0.15})`);
+      halo.addColorStop(1,   `rgba(160,120,255,0)`);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 5, 0, Math.PI * 2);
+      ctx.fillStyle = halo;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(230,210,255,${a})`;
+      ctx.fill();
+
+      ctx.save();
+      ctx.globalAlpha = a * 0.55;
+      ctx.strokeStyle = `rgba(220,200,255,${a})`;
+      ctx.lineWidth   = 0.5;
+      const sp = p.r * 4;
+      ctx.beginPath();
+      ctx.moveTo(p.x - sp, p.y); ctx.lineTo(p.x + sp, p.y);
+      ctx.moveTo(p.x, p.y - sp); ctx.lineTo(p.x, p.y + sp);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // ---- label ----
+    if (c.labelAlpha > 0.01) {
+      const anchor = c.pts.reduce((best, p) => p.r > best.r ? p : best, c.pts[0]);
+      ctx.save();
+      ctx.globalAlpha = c.labelAlpha;
+      ctx.font        = '10px Georgia, serif';
+      ctx.fillStyle   = 'rgba(200,180,255,1)';
+      ctx.letterSpacing = '2px';
+      ctx.textAlign   = 'center';
+      ctx.fillText(c.name.toUpperCase(), anchor.x, anchor.y - 14);
+      ctx.restore();
+    }
+  });
+
+  ctx.restore();
+}
 
 /* ---- NOME NAS ESTRELAS ---- */
 const nc = document.getElementById('nameCanvas');
@@ -346,23 +582,369 @@ function toggleMusic() {
   document.getElementById('bars').className = 'player-bars' + (playing ? ' playing' : '');
 }
 
-/* ---- ESTRELAS CADENTES ---- */
-function shootStars() {
-  for (let i=0; i<12; i++) {
-    setTimeout(()=>{
-      const el = document.createElement('div');
-      el.className = 'shooting-star';
-      el.style.top = (Math.random()*60)+'%';
-      el.style.left = (Math.random()*60)+'%';
-      el.style.animation = `shootAnim ${0.6+Math.random()*0.5}s ease forwards`;
-      el.style.background = `hsl(${260+Math.random()*60},80%,85%)`;
-      document.body.appendChild(el);
-      setTimeout(()=>el.remove(),1200);
-    }, i*120);
+/* ====================================================
+   FX ENGINE — Canvas 2D, 60fps, tudo fluido
+   ==================================================== */
+const fx      = document.getElementById('fxCanvas');
+const fxCtx   = fx.getContext('2d');
+let FW, FH;
+
+function fxResize() {
+  FW = fx.width  = window.innerWidth;
+  FH = fx.height = window.innerHeight;
+}
+fxResize();
+window.addEventListener('resize', fxResize);
+
+/* ---- pool de objetos ativos ---- */
+const shooters  = [];   // estrelas cadentes
+const comets    = [];   // cometas
+const particles = [];   // sparks do botão
+const glitters  = [];   // brilhos estáticos ao redor do botão
+
+/* ====================================================
+   ESTRELA CADENTE
+   ==================================================== */
+function spawnShooter(forced) {
+  const angle  = (20 + Math.random() * 30) * Math.PI / 180;
+  const speed  = 8 + Math.random() * 10;
+  const len    = 80 + Math.random() * 160;
+  const hue    = 230 + Math.random() * 80;
+  // nasce no topo ou na lateral esquerda
+  let x, y;
+  if (Math.random() < 0.6) { x = Math.random() * FW; y = -len; }
+  else                      { x = -len; y = Math.random() * FH * 0.6; }
+
+  shooters.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    len, hue,
+    alpha: 0,
+    life: 0,
+    maxLife: 55 + Math.random() * 30,
+    tail: [],
+    active: true
+  });
+}
+
+function updateShooters() {
+  for (let i = shooters.length - 1; i >= 0; i--) {
+    const s = shooters[i];
+    s.life++;
+    s.x += s.vx;
+    s.y += s.vy;
+
+    // fade in/out
+    const prog = s.life / s.maxLife;
+    s.alpha = prog < 0.15 ? prog / 0.15
+            : prog > 0.75 ? 1 - (prog - 0.75) / 0.25
+            : 1;
+
+    // guarda histórico de posição para cauda
+    s.tail.unshift({ x: s.x, y: s.y });
+    if (s.tail.length > 28) s.tail.pop();
+
+    if (s.life >= s.maxLife) shooters.splice(i, 1);
   }
 }
 
-setTimeout(shootStars, 3500);
+function drawShooters() {
+  shooters.forEach(s => {
+    if (s.tail.length < 2) return;
+    fxCtx.save();
+    for (let t = 0; t < s.tail.length - 1; t++) {
+      const ratio = 1 - t / s.tail.length;
+      const a     = s.alpha * ratio * ratio;
+      fxCtx.beginPath();
+      fxCtx.moveTo(s.tail[t].x,   s.tail[t].y);
+      fxCtx.lineTo(s.tail[t+1].x, s.tail[t+1].y);
+      fxCtx.strokeStyle = `hsla(${s.hue},90%,90%,${a})`;
+      fxCtx.lineWidth   = (1 - t / s.tail.length) * 2.5;
+      fxCtx.lineCap     = 'round';
+      fxCtx.stroke();
+    }
+    // núcleo brilhante
+    const grd = fxCtx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 4);
+    grd.addColorStop(0, `hsla(${s.hue},100%,100%,${s.alpha})`);
+    grd.addColorStop(1, `hsla(${s.hue},80%,80%,0)`);
+    fxCtx.beginPath();
+    fxCtx.arc(s.x, s.y, 4, 0, Math.PI * 2);
+    fxCtx.fillStyle = grd;
+    fxCtx.fill();
+    fxCtx.restore();
+  });
+}
+
+/* ====================================================
+   COMETA
+   ==================================================== */
+function spawnComet() {
+  const angle  = (18 + Math.random() * 28) * Math.PI / 180;
+  const speed  = 2.5 + Math.random() * 2;
+  const hue    = 190 + Math.random() * 60; // azul-ciano
+  let x, y;
+  if (Math.random() < 0.55) { x = Math.random() * FW * 0.8; y = -20; }
+  else                       { x = -20; y = Math.random() * FH * 0.4; }
+
+  comets.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    hue,
+    alpha: 0,
+    life: 0,
+    maxLife: 260 + Math.random() * 120,
+    tail: [],
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: 0.02 + Math.random() * 0.015,
+    active: true
+  });
+}
+
+function updateComets() {
+  for (let i = comets.length - 1; i >= 0; i--) {
+    const c = comets[i];
+    c.life++;
+    c.wobble += c.wobbleSpeed;
+    c.x += c.vx + Math.sin(c.wobble) * 0.12;
+    c.y += c.vy + Math.cos(c.wobble) * 0.06;
+
+    const prog = c.life / c.maxLife;
+    c.alpha = prog < 0.08 ? prog / 0.08
+            : prog > 0.80 ? 1 - (prog - 0.80) / 0.20
+            : 1;
+
+    c.tail.unshift({ x: c.x, y: c.y });
+    if (c.tail.length > 90) c.tail.pop();
+
+    if (c.life >= c.maxLife) comets.splice(i, 1);
+  }
+}
+
+function drawComets() {
+  comets.forEach(c => {
+    if (c.tail.length < 2) return;
+    fxCtx.save();
+
+    // cauda larga com blur visual (múltiplas camadas)
+    for (let layer = 0; layer < 3; layer++) {
+      const widthMult = [3.5, 1.8, 0.7][layer];
+      const alphaMult = [0.08, 0.2, 0.55][layer];
+      for (let t = 0; t < c.tail.length - 1; t++) {
+        const ratio = 1 - t / c.tail.length;
+        const a = c.alpha * ratio * ratio * alphaMult;
+        fxCtx.beginPath();
+        fxCtx.moveTo(c.tail[t].x,   c.tail[t].y);
+        fxCtx.lineTo(c.tail[t+1].x, c.tail[t+1].y);
+        fxCtx.strokeStyle = layer === 0
+          ? `hsla(${c.hue},70%,90%,${a})`
+          : layer === 1
+          ? `hsla(${c.hue},85%,95%,${a})`
+          : `hsla(0,0%,100%,${a})`;
+        fxCtx.lineWidth = (ratio * widthMult * (layer === 0 ? 6 : layer === 1 ? 3 : 1.2));
+        fxCtx.lineCap   = 'round';
+        fxCtx.stroke();
+      }
+    }
+
+    // núcleo do cometa — glowing ball
+    const r  = 5;
+    const gHead = fxCtx.createRadialGradient(c.x, c.y, 0, c.x, c.y, r * 5);
+    gHead.addColorStop(0,   `hsla(0,0%,100%,${c.alpha})`);
+    gHead.addColorStop(0.3, `hsla(${c.hue},90%,90%,${c.alpha * 0.8})`);
+    gHead.addColorStop(1,   `hsla(${c.hue},80%,70%,0)`);
+    fxCtx.beginPath();
+    fxCtx.arc(c.x, c.y, r * 5, 0, Math.PI * 2);
+    fxCtx.fillStyle = gHead;
+    fxCtx.fill();
+
+    // coroa de luz no núcleo
+    fxCtx.beginPath();
+    fxCtx.arc(c.x, c.y, r, 0, Math.PI * 2);
+    fxCtx.fillStyle = `rgba(255,255,255,${c.alpha * 0.95})`;
+    fxCtx.shadowBlur  = 18;
+    fxCtx.shadowColor = `hsla(${c.hue},100%,90%,1)`;
+    fxCtx.fill();
+
+    fxCtx.restore();
+  });
+}
+
+/* ====================================================
+   PARTÍCULAS DO BOTÃO
+   ==================================================== */
+function spawnBurst(ox, oy) {
+  const TOTAL    = 60;
+  const SYMBOLS  = ['✦','★','✧','✩','⋆','✫','·'];
+  const PALETTES = [
+    [255,255,255], [232,180,248], [180,140,255],
+    [160,220,255], [240,208,128], [180,255,240]
+  ];
+
+  for (let i = 0; i < TOTAL; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 5;
+    const col   = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+    const isSymbol = i < 20;
+    particles.push({
+      x: ox, y: oy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - (isSymbol ? 1.5 : 0.5),
+      gravity: 0.06 + Math.random() * 0.05,
+      alpha: 1,
+      decay: 0.012 + Math.random() * 0.018,
+      size: isSymbol ? 14 + Math.random() * 8 : 2 + Math.random() * 4,
+      col,
+      isSymbol,
+      symbol: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.18,
+      life: 1
+    });
+  }
+
+  // glitters estáticos que aparecem e somem ao redor
+  for (let i = 0; i < 24; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const d = 30 + Math.random() * 110;
+    glitters.push({
+      x: ox + Math.cos(a) * d,
+      y: oy + Math.sin(a) * d,
+      alpha: 0,
+      maxAlpha: 0.6 + Math.random() * 0.4,
+      size: 1 + Math.random() * 3,
+      phase: Math.random() * Math.PI,
+      speed: 0.06 + Math.random() * 0.06,
+      life: 0,
+      maxLife: 60 + Math.random() * 40,
+      hue: 240 + Math.random() * 80
+    });
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += p.gravity;
+    p.vx *= 0.98;
+    p.rot += p.rotV;
+    p.alpha -= p.decay;
+    if (p.alpha <= 0) particles.splice(i, 1);
+  }
+  for (let i = glitters.length - 1; i >= 0; i--) {
+    const g = glitters[i];
+    g.life++;
+    g.phase += g.speed;
+    g.alpha = Math.sin(g.phase) * g.maxAlpha * (1 - g.life / g.maxLife);
+    if (g.life >= g.maxLife) glitters.splice(i, 1);
+  }
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    fxCtx.save();
+    fxCtx.globalAlpha = Math.max(0, p.alpha);
+    if (p.isSymbol) {
+      fxCtx.translate(p.x, p.y);
+      fxCtx.rotate(p.rot);
+      fxCtx.font      = `${p.size}px Georgia, serif`;
+      fxCtx.fillStyle = `rgb(${p.col.join(',')})`;
+      fxCtx.shadowBlur  = 12;
+      fxCtx.shadowColor = `rgba(${p.col.join(',')},0.8)`;
+      fxCtx.textAlign   = 'center';
+      fxCtx.textBaseline = 'middle';
+      fxCtx.fillText(p.symbol, 0, 0);
+    } else {
+      const grd = fxCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+      grd.addColorStop(0, `rgba(${p.col.join(',')},${p.alpha})`);
+      grd.addColorStop(1, `rgba(${p.col.join(',')},0)`);
+      fxCtx.beginPath();
+      fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      fxCtx.fillStyle = grd;
+      fxCtx.fill();
+    }
+    fxCtx.restore();
+  });
+
+  // glitters — cruzes de 4 pontas
+  glitters.forEach(g => {
+    if (g.alpha <= 0) return;
+    fxCtx.save();
+    fxCtx.globalAlpha = g.alpha;
+    fxCtx.strokeStyle = `hsl(${g.hue},80%,90%)`;
+    fxCtx.lineWidth   = 1;
+    fxCtx.shadowBlur  = 6;
+    fxCtx.shadowColor = `hsl(${g.hue},90%,80%)`;
+    const s = g.size * 3;
+    fxCtx.beginPath();
+    fxCtx.moveTo(g.x - s, g.y); fxCtx.lineTo(g.x + s, g.y);
+    fxCtx.moveTo(g.x, g.y - s); fxCtx.lineTo(g.x, g.y + s);
+    fxCtx.stroke();
+    // diagonal fina
+    fxCtx.globalAlpha = g.alpha * 0.4;
+    fxCtx.lineWidth   = 0.5;
+    const sd = s * 0.6;
+    fxCtx.beginPath();
+    fxCtx.moveTo(g.x - sd, g.y - sd); fxCtx.lineTo(g.x + sd, g.y + sd);
+    fxCtx.moveTo(g.x + sd, g.y - sd); fxCtx.lineTo(g.x - sd, g.y + sd);
+    fxCtx.stroke();
+    fxCtx.restore();
+  });
+}
+
+/* ====================================================
+   LOOP PRINCIPAL
+   ==================================================== */
+function fxLoop() {
+  fxCtx.clearRect(0, 0, FW, FH);
+  updateShooters();
+  updateComets();
+  updateParticles();
+  drawShooters();
+  drawComets();
+  drawParticles();
+  requestAnimationFrame(fxLoop);
+}
+fxLoop();
+
+/* ====================================================
+   SPAWN AUTOMÁTICO
+   ==================================================== */
+// estrelas cadentes — aparece 1 a 1, fluxo contínuo
+function scheduleShooter() {
+  spawnShooter();
+  setTimeout(scheduleShooter, 600 + Math.random() * 1800);
+}
+setTimeout(scheduleShooter, 800);
+
+// cometa — mais raro, solene
+function scheduleComet() {
+  spawnComet();
+  setTimeout(scheduleComet, 12000 + Math.random() * 14000);
+}
+setTimeout(scheduleComet, 3000);
+
+// primeiro burst ao carregar (chuva inicial)
+function initialShower() {
+  for (let i = 0; i < 10; i++) setTimeout(spawnShooter, i * 200);
+}
+setTimeout(initialShower, 2000);
+
+/* ====================================================
+   BOTÃO
+   ==================================================== */
+function shootStarsBtn(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const ox   = rect.left + rect.width  / 2;
+  const oy   = rect.top  + rect.height / 2;
+  spawnBurst(ox, oy);
+  spawnComet();
+  for (let i = 0; i < 8; i++) setTimeout(spawnShooter, i * 80);
+}
+document.querySelector('.btn').addEventListener('click', shootStarsBtn);
 </script>
 </body>
 </html>
