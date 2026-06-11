@@ -648,9 +648,10 @@
    ===================================================== */
 function getTargetDate() {
   const now = new Date();
-  let target = new Date(now.getFullYear(), 5, 12, 0, 0, 0, 0); // mês 5 = junho
-  if (now >= target) {
-    target = new Date(now.getFullYear() + 1, 5, 12, 0, 0, 0, 0);
+  const target = new Date(now.getFullYear(), 5, 12, 0, 0, 0, 0); // mês 5 = junho
+  // só avança pro ano seguinte se JÁ passou do dia 12 de junho deste ano
+  if (now > target) {
+    return new Date(now.getFullYear() + 1, 5, 12, 0, 0, 0, 0);
   }
   return target;
 }
@@ -661,10 +662,10 @@ let prevSeconds = -1;
 let countdownDone = false;
 let finalCountdownActive = false;
 
-// Verifica se já passou — desbloqueia imediatamente sem mostrar contagem
+// Só mostra surpresa imediata se a página abrir DEPOIS do dia 12 (não antes, não no próprio dia)
 const now0 = new Date();
-const alreadyPast = now0 >= new Date(now0.getFullYear(), 5, 12, 0, 0, 0, 0)
-                    && !(now0.getMonth() === 5 && now0.getDate() === 12 && now0.getHours() === 0 && now0.getMinutes() < 1);
+const targetCheck = new Date(now0.getFullYear(), 5, 12, 0, 0, 0, 0);
+const alreadyPast = now0 > targetCheck;
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
