@@ -125,6 +125,228 @@
   }
   .btn:hover { background: rgba(180,140,255,0.15); border-color: rgba(180,140,255,0.9); color: #fff; box-shadow: 0 0 20px rgba(180,140,255,0.3); }
 
+  /* ===== MENSAGEM OCULTA DO UNIVERSO ===== */
+  .secret-section {
+    margin-top: 3.5rem;
+    text-align: center;
+    animation: fadeUp 2s ease 3s forwards; opacity: 0;
+    position: relative; z-index: 10;
+    max-width: 560px; width: 100%;
+  }
+  .secret-intro {
+    font-size: 13px; letter-spacing: 3px; color: rgba(200,170,255,0.55);
+    text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .secret-hint {
+    font-size: 16px; font-style: italic; color: rgba(220,200,255,0.7);
+    margin-bottom: 1.8rem; line-height: 1.7;
+  }
+
+  /* botão mágico */
+  .secret-btn-wrap { position: relative; display: inline-block; }
+  .secret-btn {
+    position: relative; z-index: 2;
+    background: transparent;
+    border: 1px solid rgba(180,140,255,0.45);
+    border-radius: 50px;
+    padding: 14px 38px;
+    color: #d0b0ff;
+    font-size: 14px; letter-spacing: 2px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+    animation: secretPulse 2.8s ease-in-out infinite;
+    backdrop-filter: blur(8px);
+  }
+  .secret-btn:hover {
+    transform: scale(1.10);
+    background: rgba(140,90,255,0.18);
+    border-color: rgba(220,180,255,0.9);
+    box-shadow: 0 0 30px rgba(180,120,255,0.6), 0 0 60px rgba(120,80,220,0.3);
+    color: #fff;
+    animation: none;
+  }
+  @keyframes secretPulse {
+    0%,100% { box-shadow: 0 0 12px rgba(180,120,255,0.3), 0 0 0 0 rgba(180,120,255,0); }
+    50%      { box-shadow: 0 0 28px rgba(180,120,255,0.6), 0 0 18px rgba(120,80,220,0.3); }
+  }
+
+  /* mini estrelas orbitando */
+  .orbit-stars { position: absolute; top: 50%; left: 50%; width: 0; height: 0; pointer-events: none; }
+  .orbit-star {
+    position: absolute;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px 2px rgba(200,170,255,0.8);
+  }
+  .orbit-star:nth-child(1) { animation: orbitStar 3s linear infinite; }
+  .orbit-star:nth-child(2) { animation: orbitStar 3s linear infinite; animation-delay: -1s; }
+  .orbit-star:nth-child(3) { animation: orbitStar 3s linear infinite; animation-delay: -2s; }
+  @keyframes orbitStar {
+    from { transform: rotate(0deg) translateX(58px) rotate(0deg); opacity:0.9; }
+    to   { transform: rotate(360deg) translateX(58px) rotate(-360deg); opacity:0.5; }
+  }
+
+  /* partículas flutuantes ao redor do botão */
+  .btn-float-particles { position: absolute; top: 50%; left: 50%; width: 0; height: 0; pointer-events: none; }
+  .fp {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(200,160,255,0.7);
+    animation: floatUp 3s ease-in-out infinite;
+  }
+  .fp:nth-child(1)  { left: -40px; animation-delay: 0s;    animation-duration: 2.8s; }
+  .fp:nth-child(2)  { left: -20px; animation-delay: 0.5s;  animation-duration: 3.2s; }
+  .fp:nth-child(3)  { left:  0px;  animation-delay: 1s;    animation-duration: 2.5s; }
+  .fp:nth-child(4)  { left:  20px; animation-delay: 1.5s;  animation-duration: 3.5s; }
+  .fp:nth-child(5)  { left:  40px; animation-delay: 0.8s;  animation-duration: 2.9s; }
+  .fp:nth-child(6)  { left: -30px; animation-delay: 1.8s;  animation-duration: 3.1s; }
+  .fp:nth-child(7)  { left:  30px; animation-delay: 2.2s;  animation-duration: 2.7s; }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    30%  { opacity: 0.8; }
+    100% { transform: translateY(-50px) scale(0.3); opacity: 0; }
+  }
+
+  /* ---- OVERLAY CÓSMICO ---- */
+  #cosmicOverlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: transparent;
+    pointer-events: none;
+    display: none;
+  }
+  #cosmicOverlay.active { display: block; pointer-events: all; }
+  #cosmicOverlay canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* ---- CAIXA DE ANÁLISE ---- */
+  #analysisBox {
+    position: fixed; inset: 0; z-index: 110;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px;
+  }
+  #analysisBox.active { display: flex; }
+  .cosmic-sphere {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #c8a0ff, #4020a0 60%, #0a0520);
+    box-shadow: 0 0 40px rgba(180,120,255,0.8), 0 0 80px rgba(100,60,200,0.5), inset 0 0 30px rgba(255,200,255,0.15);
+    animation: sphereSpin 3s linear infinite, spherePulse 2s ease-in-out infinite;
+    position: relative;
+  }
+  .cosmic-sphere::after {
+    content: '';
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(180,140,255,0.3);
+    animation: ringRotate 4s linear infinite;
+  }
+  @keyframes sphereSpin  { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+  @keyframes spherePulse { 0%,100% { box-shadow: 0 0 40px rgba(180,120,255,0.8), 0 0 80px rgba(100,60,200,0.5); } 50% { box-shadow: 0 0 60px rgba(200,150,255,1), 0 0 120px rgba(130,80,255,0.7); } }
+  @keyframes ringRotate  { from { transform: rotate(0deg) scaleX(1.6); } to { transform: rotate(360deg) scaleX(1.6); } }
+
+  .typing-text {
+    font-size: 15px; letter-spacing: 2px; color: rgba(220,200,255,0.85);
+    font-style: italic; text-align: center; min-height: 28px;
+    text-shadow: 0 0 20px rgba(180,140,255,0.6);
+  }
+  .typing-cursor { display: inline-block; width: 2px; height: 16px; background: #c8a8ff; margin-left: 2px; animation: blink 0.7s step-end infinite; vertical-align: middle; }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+  /* ---- BARRA DE PROGRESSO ---- */
+  #progressBox {
+    position: fixed; inset: 0; z-index: 110;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  }
+  #progressBox.active { display: flex; }
+  .progress-label { font-size: 13px; letter-spacing: 3px; color: rgba(200,170,255,0.7); text-transform: uppercase; text-shadow: 0 0 15px rgba(180,140,255,0.5); }
+  .progress-track {
+    width: min(360px, 80vw); height: 4px;
+    background: rgba(180,140,255,0.12);
+    border-radius: 4px; overflow: visible; position: relative;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 4px;
+    background: linear-gradient(90deg, #6030d0, #b070ff, #e0c0ff);
+    box-shadow: 0 0 12px rgba(180,120,255,0.7);
+    transition: width 0.08s linear;
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute; right: -4px; top: -4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #e0c0ff;
+    box-shadow: 0 0 10px #b070ff, 0 0 20px rgba(180,120,255,0.6);
+  }
+  .progress-pct { font-size: 28px; color: #e0c0ff; letter-spacing: 2px; text-shadow: 0 0 20px rgba(200,150,255,0.8); }
+  .progress-phrase { font-size: 14px; font-style: italic; color: rgba(200,180,255,0.6); letter-spacing: 1px; min-height: 22px; }
+
+  /* ---- CINEMATIC FLASH ---- */
+  #cinematicBox {
+    position: fixed; inset: 0; z-index: 120;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    background: #050a1a;
+  }
+  #cinematicBox.active { display: flex; }
+  .cinematic-msg {
+    font-size: clamp(1rem, 3.5vw, 1.4rem);
+    color: rgba(230,210,255,0.9);
+    font-style: italic; letter-spacing: 2px; text-align: center;
+    text-shadow: 0 0 30px rgba(200,160,255,0.8);
+    opacity: 0; transform: scale(0.9);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .cinematic-msg.show { opacity: 1; transform: scale(1); }
+
+  /* ---- VIDEO REVEAL ---- */
+  #videoReveal {
+    position: fixed; inset: 0; z-index: 130;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    padding: 1rem;
+  }
+  #videoReveal.active { display: flex; }
+  .video-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(180,140,255,0.4);
+    border-radius: 24px; padding: 1.5rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(140,90,255,0.3), 0 0 80px rgba(80,40,180,0.2), inset 0 0 40px rgba(180,140,255,0.05);
+    max-width: min(640px, 94vw);
+    width: 100%;
+    opacity: 0; transform: scale(0.85) translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+    position: relative;
+    animation: cardGlow 3s ease-in-out infinite;
+  }
+  .video-card.show { opacity: 1; transform: scale(1) translateY(0); }
+  @keyframes cardGlow {
+    0%,100% { box-shadow: 0 0 40px rgba(140,90,255,0.3), 0 0 80px rgba(80,40,180,0.2); }
+    50%      { box-shadow: 0 0 60px rgba(180,120,255,0.5), 0 0 120px rgba(120,60,220,0.3); }
+  }
+  .video-card video, .video-card iframe {
+    width: 100%; border-radius: 14px; display: block;
+    aspect-ratio: 16/9; background: #000;
+  }
+  .video-caption {
+    font-size: 14px; font-style: italic; color: rgba(230,200,255,0.75);
+    text-align: center; letter-spacing: 1.5px; margin-top: 1rem;
+    text-shadow: 0 0 15px rgba(200,160,255,0.5);
+  }
+  .video-close {
+    position: absolute; top: 10px; right: 14px;
+    background: none; border: none; color: rgba(200,160,255,0.5);
+    font-size: 20px; cursor: pointer; transition: color 0.2s;
+  }
+  .video-close:hover { color: #fff; }
+  .reveal-title {
+    font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+    color: rgba(240,220,255,0.85); font-style: italic; letter-spacing: 2px;
+    text-align: center; text-shadow: 0 0 20px rgba(200,160,255,0.6);
+    opacity: 0; animation: fadeUp 1s ease 0.5s forwards;
+  }
+
   canvas#fxCanvas {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 2; pointer-events: none;
@@ -188,6 +410,64 @@
   </div>
 
   <button class="btn">✦ Enviar estrelas cadentes</button>
+
+  <!-- MENSAGEM OCULTA DO UNIVERSO -->
+  <div class="secret-section" id="secretSection">
+    <div class="secret-intro">✦ &nbsp; mensagem oculta &nbsp; ✦</div>
+    <p class="secret-hint">Há algo que o universo guardou apenas para você...</p>
+    <div class="secret-btn-wrap" id="secretBtnWrap">
+      <div class="orbit-stars">
+        <div class="orbit-star"></div>
+        <div class="orbit-star"></div>
+        <div class="orbit-star"></div>
+      </div>
+      <div class="btn-float-particles">
+        <div class="fp"></div><div class="fp"></div><div class="fp"></div>
+        <div class="fp"></div><div class="fp"></div><div class="fp"></div>
+        <div class="fp"></div>
+      </div>
+      <button class="secret-btn" id="secretBtn" onclick="startSecretJourney(event)">🌌 Descobrir o Segredo</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY ESCURO CÓSMICO -->
+<div id="cosmicOverlay">
+  <canvas id="overlayCanvas"></canvas>
+</div>
+
+<!-- ANÁLISE -->
+<div id="analysisBox">
+  <div class="cosmic-sphere"></div>
+  <div class="typing-text" id="typingText"><span class="typing-cursor"></span></div>
+</div>
+
+<!-- PROGRESSO -->
+<div id="progressBox">
+  <div class="progress-label">desbloqueando...</div>
+  <div class="progress-pct" id="progressPct">0%</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-phrase" id="progressPhrase">Consultando as estrelas...</div>
+</div>
+
+<!-- CINEMÁTICO -->
+<div id="cinematicBox">
+  <div class="cinematic-msg" id="cinematicMsg"></div>
+</div>
+
+<!-- VÍDEO REVELADO -->
+<div id="videoReveal">
+  <div class="reveal-title">Este momento foi preparado especialmente para você ❤️</div>
+  <div class="video-card" id="videoCard">
+    <button class="video-close" onclick="closeVideo()">✕</button>
+    <!-- COLOQUE AQUI A URL DO SEU VÍDEO -->
+    <video id="secretVideo" controls autoplay playsinline>
+      <source src="assets/tocando.mp4" type="video/mp4">
+      <!-- ou use um iframe do YouTube: -->
+      <!-- <iframe src="https://www.youtube.com/embed/SEU_ID_AQUI?autoplay=1" frameborder="0" allowfullscreen allow="autoplay"></iframe> -->
+    </video>
+    <div class="video-caption">✦ &nbsp; com todo o meu universo &nbsp; ✦</div>
+  </div>
 </div>
 
 <script>
@@ -947,6 +1227,373 @@ function shootStarsBtn(e) {
   for (let i = 0; i < 8; i++) setTimeout(spawnShooter, i * 80);
 }
 document.querySelector('.btn').addEventListener('click', shootStarsBtn);
+
+/* ====================================================
+   MENSAGEM OCULTA DO UNIVERSO
+   ==================================================== */
+let secretUnlocked = false;
+
+// ---- overlay canvas particles convergindo ----
+const overlayCanvas = document.getElementById('overlayCanvas');
+const oc = overlayCanvas.getContext('2d');
+let ocW, ocH;
+let overlayParticles = [];
+let overlayAnim = null;
+let overlayMode = 'idle'; // 'idle' | 'converge' | 'explode' | 'rain'
+let explodeParticles = [];
+let rainParticles = [];
+let goldenParticles = [];
+
+function resizeOverlay() {
+  ocW = overlayCanvas.width = window.innerWidth;
+  ocH = overlayCanvas.height = window.innerHeight;
+}
+resizeOverlay();
+window.addEventListener('resize', resizeOverlay);
+
+function initOverlayParticles() {
+  overlayParticles = [];
+  for (let i = 0; i < 200; i++) {
+    overlayParticles.push({
+      x: Math.random() * ocW,
+      y: Math.random() * ocH,
+      r: Math.random() * 2 + 0.5,
+      alpha: Math.random() * 0.8 + 0.2,
+      hue: 220 + Math.random() * 80,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+    });
+  }
+}
+
+function convergeParticles(progress) {
+  const cx = ocW / 2, cy = ocH / 2;
+  overlayParticles.forEach(p => {
+    const dx = cx - p.x, dy = cy - p.y;
+    const force = 0.012 + progress * 0.08;
+    p.x += dx * force + p.vx;
+    p.y += dy * force + p.vy;
+    p.vx *= 0.95; p.vy *= 0.95;
+  });
+}
+
+function spawnExplode() {
+  explodeParticles = [];
+  const cx = ocW / 2, cy = ocH / 2;
+  for (let i = 0; i < 120; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 14;
+    explodeParticles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: 1 + Math.random() * 4,
+      alpha: 1,
+      hue: 200 + Math.random() * 120,
+      decay: 0.012 + Math.random() * 0.02,
+      gravity: -0.04 + Math.random() * 0.08,
+    });
+  }
+}
+
+function spawnRain() {
+  rainParticles = [];
+  for (let i = 0; i < 80; i++) {
+    rainParticles.push({
+      x: Math.random() * ocW,
+      y: -20 - Math.random() * ocH,
+      vy: 3 + Math.random() * 5,
+      len: 40 + Math.random() * 80,
+      alpha: 0.4 + Math.random() * 0.6,
+      hue: 220 + Math.random() * 60,
+      width: 0.5 + Math.random() * 1.2,
+    });
+  }
+  goldenParticles = [];
+  for (let i = 0; i < 60; i++) {
+    goldenParticles.push({
+      x: Math.random() * ocW,
+      y: Math.random() * ocH,
+      r: 1 + Math.random() * 3,
+      alpha: Math.random(),
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: -0.5 - Math.random() * 2,
+      hue: 40 + Math.random() * 30,
+      decay: 0.005 + Math.random() * 0.01,
+    });
+  }
+}
+
+let overlayBgAlpha = 0;
+let convergeProg = 0;
+
+function overlayLoop() {
+  oc.clearRect(0, 0, ocW, ocH);
+
+  // fundo escuro
+  oc.fillStyle = `rgba(5,10,26,${overlayBgAlpha})`;
+  oc.fillRect(0, 0, ocW, ocH);
+
+  if (overlayMode === 'converge') {
+    convergeProg = Math.min(1, convergeProg + 0.004);
+    convergeParticles(convergeProg);
+    overlayParticles.forEach(p => {
+      oc.beginPath();
+      oc.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      oc.fillStyle = `hsla(${p.hue},80%,85%,${p.alpha * 0.8})`;
+      oc.shadowBlur = 8;
+      oc.shadowColor = `hsla(${p.hue},80%,85%,0.5)`;
+      oc.fill();
+      oc.shadowBlur = 0;
+    });
+  }
+
+  if (overlayMode === 'explode') {
+    for (let i = explodeParticles.length - 1; i >= 0; i--) {
+      const p = explodeParticles[i];
+      p.x += p.vx; p.y += p.vy; p.vy += p.gravity;
+      p.vx *= 0.97; p.alpha -= p.decay;
+      if (p.alpha <= 0) { explodeParticles.splice(i, 1); continue; }
+      const g = oc.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2);
+      g.addColorStop(0, `hsla(${p.hue},90%,95%,${p.alpha})`);
+      g.addColorStop(1, `hsla(${p.hue},80%,70%,0)`);
+      oc.beginPath();
+      oc.arc(p.x, p.y, p.r * 2, 0, Math.PI * 2);
+      oc.fillStyle = g;
+      oc.fill();
+    }
+    // flash de luz
+    const flashAlpha = Math.max(0, explodeFlash);
+    if (flashAlpha > 0) {
+      const gFlash = oc.createRadialGradient(ocW/2, ocH/2, 0, ocW/2, ocH/2, Math.max(ocW, ocH) * 0.7);
+      gFlash.addColorStop(0, `rgba(255,240,255,${flashAlpha})`);
+      gFlash.addColorStop(0.3, `rgba(200,160,255,${flashAlpha * 0.5})`);
+      gFlash.addColorStop(1, 'transparent');
+      oc.fillStyle = gFlash;
+      oc.fillRect(0, 0, ocW, ocH);
+      explodeFlash -= 0.03;
+    }
+  }
+
+  if (overlayMode === 'rain') {
+    rainParticles.forEach(p => {
+      p.y += p.vy;
+      if (p.y > ocH + p.len) { p.y = -p.len; p.x = Math.random() * ocW; }
+      oc.beginPath();
+      oc.moveTo(p.x, p.y);
+      oc.lineTo(p.x - 1, p.y + p.len);
+      oc.strokeStyle = `hsla(${p.hue},80%,85%,${p.alpha * 0.5})`;
+      oc.lineWidth = p.width;
+      oc.stroke();
+    });
+    goldenParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) { p.y = ocH + 10; p.x = Math.random() * ocW; p.alpha = Math.random(); }
+      oc.beginPath();
+      oc.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      oc.fillStyle = `hsla(${p.hue},90%,70%,${p.alpha * 0.7})`;
+      oc.shadowBlur = 8;
+      oc.shadowColor = `hsla(${p.hue},90%,70%,0.5)`;
+      oc.fill();
+      oc.shadowBlur = 0;
+    });
+  }
+
+  overlayAnim = requestAnimationFrame(overlayLoop);
+}
+
+let explodeFlash = 0;
+
+// ---- Som suave ao clicar ----
+function playSecretClick() {
+  try {
+    const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = ctx2.createOscillator();
+      const g = ctx2.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, ctx2.currentTime + i * 0.15);
+      g.gain.linearRampToValueAtTime(0.15, ctx2.currentTime + i * 0.15 + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx2.currentTime + i * 0.15 + 0.6);
+      osc.connect(g); g.connect(ctx2.destination);
+      osc.start(ctx2.currentTime + i * 0.15);
+      osc.stop(ctx2.currentTime + i * 0.15 + 0.8);
+    });
+  } catch(e) {}
+}
+
+// ---- Digitação ----
+function typeText(el, text, speed = 55) {
+  return new Promise(resolve => {
+    el.innerHTML = '<span class="typing-cursor"></span>';
+    let i = 0;
+    function next() {
+      if (i >= text.length) { resolve(); return; }
+      el.innerHTML = text.slice(0, ++i) + '<span class="typing-cursor"></span>';
+      setTimeout(next, speed + Math.random() * 25);
+    }
+    setTimeout(next, 200);
+  });
+}
+
+async function runAnalysis() {
+  const el = document.getElementById('typingText');
+  const lines = [
+    'Analisando compatibilidade entre duas almas...',
+    'Procurando memórias especiais...',
+    'Calculando quantidade de momentos felizes...',
+    'Resultado encontrado.',
+  ];
+  for (const line of lines) {
+    await typeText(el, line, 48);
+    await sleep(900);
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ---- Progresso ----
+async function runProgress() {
+  const fill = document.getElementById('progressFill');
+  const pct  = document.getElementById('progressPct');
+  const phrase = document.getElementById('progressPhrase');
+  const phrases = [
+    'Consultando as estrelas...',
+    'Lendo sinais do destino...',
+    'Desbloqueando lembranças...',
+    'Preparando surpresa...',
+  ];
+  let current = 0;
+  let phraseIdx = 0;
+  const total = 4000; // ms
+  const start = performance.now();
+  await new Promise(resolve => {
+    function tick() {
+      const elapsed = performance.now() - start;
+      const p = Math.min(1, elapsed / total);
+      // easing suave
+      const eased = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p+2,2)/2;
+      const val = Math.round(eased * 100);
+      fill.style.width = val + '%';
+      pct.textContent = val + '%';
+      // troca frase
+      const idx = Math.floor(p * phrases.length);
+      if (idx !== phraseIdx && idx < phrases.length) {
+        phraseIdx = idx;
+        phrase.style.opacity = 0;
+        setTimeout(() => { phrase.textContent = phrases[phraseIdx]; phrase.style.opacity = 1; phrase.style.transition = 'opacity 0.5s'; }, 200);
+      }
+      if (p < 1) requestAnimationFrame(tick);
+      else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+// ---- Cinemático ----
+async function runCinematic() {
+  const box = document.getElementById('cinematicBox');
+  const msg = document.getElementById('cinematicMsg');
+  box.classList.add('active');
+
+  // estrelas convergindo + explosão de luz
+  overlayMode = 'explode';
+  explodeFlash = 1.5;
+  spawnExplode();
+
+  msg.textContent = 'O universo encontrou algo que você precisa ver...';
+  await sleep(200);
+  msg.classList.add('show');
+
+  await sleep(3500);
+  msg.classList.remove('show');
+  await sleep(600);
+  box.classList.remove('active');
+}
+
+// ---- Revelar vídeo ----
+async function revealVideo() {
+  const reveal = document.getElementById('videoReveal');
+  const card   = document.getElementById('videoCard');
+  overlayMode  = 'rain';
+  spawnRain();
+  reveal.classList.add('active');
+  await sleep(200);
+  card.classList.add('show');
+}
+
+function closeVideo() {
+  document.getElementById('videoReveal').classList.remove('active');
+  overlayMode = 'idle';
+  overlayBgAlpha = 0;
+  document.getElementById('cosmicOverlay').classList.remove('active');
+  cancelAnimationFrame(overlayAnim);
+  oc.clearRect(0, 0, ocW, ocH);
+}
+
+// ---- JORNADA PRINCIPAL ----
+async function startSecretJourney(e) {
+  if (secretUnlocked) return;
+  secretUnlocked = true;
+
+  playSecretClick();
+
+  // burst no botão
+  const rect = e.currentTarget.getBoundingClientRect();
+  spawnBurst(rect.left + rect.width/2, rect.top + rect.height/2);
+
+  // esconde botão
+  const wrap = document.getElementById('secretBtnWrap');
+  wrap.style.transition = 'opacity 0.5s, transform 0.5s';
+  wrap.style.opacity = '0';
+  wrap.style.transform = 'scale(0.8)';
+  setTimeout(() => wrap.style.display = 'none', 500);
+
+  // inicia overlay
+  resizeOverlay();
+  initOverlayParticles();
+  const overlay = document.getElementById('cosmicOverlay');
+  overlay.classList.add('active');
+  overlayMode = 'converge';
+  overlayBgAlpha = 0;
+  overlayAnim = requestAnimationFrame(overlayLoop);
+
+  // escurece fundo gradualmente
+  let bgTick = 0;
+  const bgInterval = setInterval(() => {
+    bgTick++;
+    overlayBgAlpha = Math.min(0.92, bgTick * 0.015);
+    if (overlayBgAlpha >= 0.92) clearInterval(bgInterval);
+  }, 40);
+
+  await sleep(800);
+
+  // ETAPA 1 — análise
+  const analysisBox = document.getElementById('analysisBox');
+  analysisBox.classList.add('active');
+  await runAnalysis();
+  await sleep(600);
+  analysisBox.classList.remove('active');
+
+  // ETAPA 2 — progresso
+  await sleep(400);
+  const progressBox = document.getElementById('progressBox');
+  progressBox.classList.add('active');
+  overlayMode = 'converge';
+  await runProgress();
+  await sleep(500);
+  progressBox.classList.remove('active');
+
+  // ETAPA 3 — cinemático
+  await sleep(300);
+  await runCinematic();
+
+  // revelar vídeo
+  await sleep(400);
+  revealVideo();
+}
 </script>
 </body>
 </html>
