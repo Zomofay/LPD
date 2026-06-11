@@ -460,6 +460,10 @@
   <div class="reveal-title">Este momento foi preparado especialmente para você ❤️</div>
   <div class="video-card" id="videoCard">
     <button class="video-close" onclick="closeVideo()">✕</button>
+    <video controls playsinline crossorigin="anonymous">
+      <source src="assets/tocando.mp4" type="video/mp4">
+      Seu navegador não suporta o elemento de vídeo.
+    </video>
     <div class="video-caption">✦ &nbsp; com todo o meu universo &nbsp; ✦</div>
   </div>
 </div>
@@ -1511,11 +1515,15 @@ async function runCinematic() {
 async function revealVideo() {
   const reveal = document.getElementById('videoReveal');
   const card   = document.getElementById('videoCard');
+  const video  = card.querySelector('video');
   overlayMode  = 'rain';
   spawnRain();
   reveal.classList.add('active');
   await sleep(200);
   card.classList.add('show');
+  if (video) {
+    video.play().catch(err => console.log('Erro ao reproduzir vídeo:', err));
+  }
 }
 
 function closeVideo() {
