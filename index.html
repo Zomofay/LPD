@@ -363,9 +363,9 @@
 
   /* ---- Botão flutuante (presente celestial) ---- */
   .valentine-fab {
-    position: fixed;
-    bottom: 22px; right: 22px;
-    z-index: 99999;
+    position: relative;
+    z-index: 50;
+    margin: 0 0 2rem 0;
     display: flex; align-items: center; gap: 8px;
     padding: 14px 24px;
     border: none; border-radius: 50px; cursor: pointer;
@@ -374,7 +374,8 @@
     background: linear-gradient(135deg, #ff2e63, #ff8aa6, #ffd98a, #fff6f0, #ff2e63);
     background-size: 400% 400%;
     box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3);
-    animation: vGradientShift 8s ease infinite, vFabFloat 4.5s ease-in-out infinite, vFabPulse 2.6s ease-in-out infinite;
+    animation: vGradientShift 8s ease infinite, vFabFloat 4.5s ease-in-out infinite, vFabPulse 2.6s ease-in-out infinite, vFabAppear 1.8s ease 0.9s forwards;
+    opacity: 0;
     transition: transform 0.35s ease, box-shadow 0.35s ease;
     overflow: visible;
     text-shadow: 0 0 10px rgba(255,255,255,0.6);
@@ -385,6 +386,7 @@
   }
   @keyframes vGradientShift { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
   @keyframes vFabFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  @keyframes vFabAppear { to { opacity: 1; } }
   @keyframes vFabPulse {
     0%,100% { box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3); }
     50%     { box-shadow: 0 0 40px rgba(255,110,150,0.9), 0 0 80px rgba(255,220,150,0.5); }
@@ -444,7 +446,7 @@
   }
   .vfab-label { position:relative; z-index:1; }
   @media (max-width:600px){
-    .valentine-fab { font-size:11px; padding:10px 16px; bottom:14px; right:14px; white-space:normal; max-width:78vw; text-align:center; border-radius:24px; }
+    .valentine-fab { font-size:11px; padding:10px 16px; white-space:normal; max-width:78vw; text-align:center; border-radius:24px; }
     .vfab-orbit span { animation:none; display:none; }
   }
 
@@ -632,6 +634,19 @@
       <span style="height:14px"></span>
     </div>
   </div>
+
+  <button class="valentine-fab" id="valentineFab" aria-label="Surpresa de Dia dos Namorados">
+    <span class="vfab-orbit">
+      <span></span><span></span><span></span>
+    </span>
+    <span class="vfab-hearts">
+      <span>❤</span><span>❤</span><span>❤</span><span>❤</span>
+    </span>
+    <span class="vfab-sparkles">
+      <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
+    </span>
+    <span class="vfab-label">❤️ Uma Surpresa de Dia dos Namorados ❤️</span>
+  </button>
 
   <div class="card">
     <p>Existe um universo inteiro lá fora — bilhões de estrelas, galáxias sem fim, nebulosas que levam milênios de luz para atravessar. E mesmo assim, a coisa mais bonita que esse universo já criou tem um nome:</p>
@@ -1844,19 +1859,6 @@ async function startSecretJourney(e) {
 </script>
 <!-- ================= EVENTO ESPECIAL: DIA DOS NAMORADOS ================= -->
 <!-- Bloco totalmente isolado — não interfere em nenhuma funcionalidade existente -->
-
-<button class="valentine-fab" id="valentineFab" aria-label="Surpresa de Dia dos Namorados">
-  <span class="vfab-orbit">
-    <span></span><span></span><span></span>
-  </span>
-  <span class="vfab-hearts">
-    <span>❤</span><span>❤</span><span>❤</span><span>❤</span>
-  </span>
-  <span class="vfab-sparkles">
-    <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
-  </span>
-  <span class="vfab-label">❤️ Uma Surpresa de Dia dos Namorados ❤️</span>
-</button>
 
 <div class="valentine-overlay" id="valentineOverlay">
   <canvas id="valentineCanvas"></canvas>
