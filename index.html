@@ -355,6 +355,251 @@
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeUp   { from { opacity: 0; transform: translateY(30px);  } to { opacity: 1; transform: translateY(0); } }
   @keyframes rotate   { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  /* ============================================================
+     EVENTO ESPECIAL — SURPRESA DE DIA DOS NAMORADOS
+     (bloco isolado — não altera nada acima)
+     ============================================================ */
+
+  /* ---- Botão flutuante (presente celestial) ---- */
+  .valentine-fab {
+    position: fixed;
+    bottom: 22px; right: 22px;
+    z-index: 99999;
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 24px;
+    border: none; border-radius: 50px; cursor: pointer;
+    font-family: 'Georgia', serif; font-size: 13px;
+    letter-spacing: 1px; color: #fff8f0;
+    background: linear-gradient(135deg, #ff2e63, #ff8aa6, #ffd98a, #fff6f0, #ff2e63);
+    background-size: 400% 400%;
+    box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3);
+    animation: vGradientShift 8s ease infinite, vFabFloat 4.5s ease-in-out infinite, vFabPulse 2.6s ease-in-out infinite;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    overflow: visible;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+  }
+  .valentine-fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 40px rgba(255,90,140,0.9), 0 0 90px rgba(255,210,140,0.5);
+  }
+  @keyframes vGradientShift { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+  @keyframes vFabFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  @keyframes vFabPulse {
+    0%,100% { box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3); }
+    50%     { box-shadow: 0 0 40px rgba(255,110,150,0.9), 0 0 80px rgba(255,220,150,0.5); }
+  }
+  .valentine-fab::before {
+    content:''; position:absolute; inset:-8px; border-radius:60px;
+    border:1px solid rgba(255,255,255,0.5);
+    opacity:0.6; pointer-events:none;
+    animation: vAuraRing 2.6s ease-out infinite;
+  }
+  @keyframes vAuraRing {
+    0%   { transform:scale(1); opacity:0.6; }
+    100% { transform:scale(1.35); opacity:0; }
+  }
+  /* pequenos corações surgindo e desaparecendo */
+  .vfab-hearts { position:absolute; inset:0; pointer-events:none; overflow:visible; }
+  .vfab-hearts span {
+    position:absolute; font-size:10px; color:#fff;
+    opacity:0; animation: vHeartPop 3s ease-in-out infinite;
+  }
+  .vfab-hearts span:nth-child(1){ top:-6px; left:12%; animation-delay:0s; }
+  .vfab-hearts span:nth-child(2){ top:-10px; left:42%; animation-delay:0.8s; }
+  .vfab-hearts span:nth-child(3){ top:-4px; left:68%; animation-delay:1.6s; }
+  .vfab-hearts span:nth-child(4){ top:-8px; left:88%; animation-delay:2.3s; }
+  @keyframes vHeartPop {
+    0%   { opacity:0; transform: translateY(0) scale(0.4); }
+    30%  { opacity:0.9; transform: translateY(-14px) scale(1); }
+    100% { opacity:0; transform: translateY(-30px) scale(0.5); }
+  }
+  /* partículas orbitando */
+  .vfab-orbit { position:absolute; top:50%; left:50%; width:0; height:0; pointer-events:none; }
+  .vfab-orbit span {
+    position:absolute; width:4px; height:4px; border-radius:50%;
+    background:#fff; box-shadow:0 0 6px 2px rgba(255,255,255,0.8);
+  }
+  .vfab-orbit span:nth-child(1){ animation: vOrbit 3.4s linear infinite; }
+  .vfab-orbit span:nth-child(2){ animation: vOrbit 3.4s linear infinite; animation-delay:-1.1s; background:#ffd98a; }
+  .vfab-orbit span:nth-child(3){ animation: vOrbit 3.4s linear infinite; animation-delay:-2.2s; background:#ff8aa6; }
+  @keyframes vOrbit {
+    from { transform: rotate(0deg) translateX(70px) rotate(0deg); opacity:0.9; }
+    to   { transform: rotate(360deg) translateX(70px) rotate(-360deg); opacity:0.4; }
+  }
+  /* brilhos ao passar o mouse */
+  .vfab-sparkles { position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity 0.3s; }
+  .valentine-fab:hover .vfab-sparkles { opacity:1; }
+  .vfab-sparkles span {
+    position:absolute; color:#ffe9b0; font-size:11px;
+    animation: vSparkle 1.4s ease-in-out infinite;
+  }
+  .vfab-sparkles span:nth-child(1){ top:-10px; left:6px; animation-delay:0s; }
+  .vfab-sparkles span:nth-child(2){ top:50%; left:-12px; animation-delay:0.3s; }
+  .vfab-sparkles span:nth-child(3){ top:-10px; right:6px; animation-delay:0.5s; }
+  .vfab-sparkles span:nth-child(4){ bottom:-10px; right:30%; animation-delay:0.8s; }
+  @keyframes vSparkle {
+    0%,100% { opacity:0; transform:scale(0.4) rotate(0deg); }
+    50%     { opacity:1; transform:scale(1.1) rotate(90deg); }
+  }
+  .vfab-label { position:relative; z-index:1; }
+  @media (max-width:600px){
+    .valentine-fab { font-size:11px; padding:10px 16px; bottom:14px; right:14px; white-space:normal; max-width:78vw; text-align:center; border-radius:24px; }
+    .vfab-orbit span { animation:none; display:none; }
+  }
+
+  /* ---- Overlay cinematográfico ---- */
+  .valentine-overlay {
+    position: fixed; inset:0; z-index: 99990;
+    display:none; overflow:hidden; background: transparent;
+  }
+  .valentine-overlay.active { display:block; }
+  #valentineCanvas { position:absolute; inset:0; width:100%; height:100%; }
+  .valentine-overlay.aurora {
+    background: radial-gradient(ellipse at 50% 30%, rgba(255,160,190,0.18), transparent 60%),
+                radial-gradient(ellipse at 30% 80%, rgba(160,140,255,0.18), transparent 60%),
+                radial-gradient(ellipse at 80% 75%, rgba(255,210,140,0.15), transparent 60%);
+    animation: vAuroraShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes vAuroraShift {
+    0%   { filter:hue-rotate(0deg) brightness(1); }
+    100% { filter:hue-rotate(35deg) brightness(1.15); }
+  }
+  .valentine-close {
+    position:absolute; top:18px; right:22px; z-index:10;
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.05);
+    color:rgba(255,255,255,0.6);
+    font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition: opacity 0.6s, color 0.2s, background 0.2s;
+  }
+  .valentine-close.show { opacity:1; pointer-events:all; }
+  .valentine-close:hover { color:#fff; background:rgba(255,255,255,0.15); }
+
+  /* ---- Textos sequenciais ---- */
+  .valentine-text {
+    position:absolute; inset:0; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; padding: 0 1.5rem;
+    pointer-events:none;
+    font-family:'Georgia', serif; font-style:italic;
+    font-size: clamp(1.1rem, 4vw, 2.1rem);
+    color: #fff5f8;
+    text-shadow: 0 0 25px rgba(255,140,170,0.8), 0 0 60px rgba(255,100,150,0.4);
+    letter-spacing:1px;
+    opacity:0;
+  }
+  .valentine-text.show.anim-typing,
+  .valentine-text.show.anim-fade,
+  .valentine-text.show.anim-fade-slow,
+  .valentine-text.show.anim-fade-quick { opacity:1; transition: opacity 1.2s ease; }
+  .valentine-text.anim-fade-slow { transition: opacity 2s ease; }
+  .valentine-text.anim-fade-quick { transition: opacity 0.5s ease; }
+  .valentine-text.anim-scale { transform: scale(0.7); transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2,.8,.2,1.2); }
+  .valentine-text.show.anim-scale { opacity:1; transform: scale(1); }
+  .valentine-text.anim-slide-left { transform: translateX(-60px); transition: opacity 1.2s ease, transform 1.2s ease; }
+  .valentine-text.show.anim-slide-left { opacity:1; transform: translateX(0); }
+  .valentine-text.anim-slide-right { transform: translateX(60px); transition: opacity 1.2s ease, transform 1.2s ease; }
+  .valentine-text.show.anim-slide-right { opacity:1; transform: translateX(0); }
+  .valentine-text .typing-cursor {
+    display:inline-block; width:2px; height:1em; background:#ffd0dc;
+    margin-left:2px; animation: blink 0.7s step-end infinite; vertical-align:middle;
+  }
+
+  /* ---- Cartão premium (mensagem secreta) ---- */
+  .valentine-card {
+    position:absolute; top:50%; left:50%; z-index:3;
+    transform: translate(-50%,-50%) scale(0.85);
+    max-width: min(560px, 90vw);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,160,190,0.3);
+    border-radius: 22px; padding: 2.4rem 2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 50px rgba(255,100,150,0.25), inset 0 0 40px rgba(255,200,220,0.06);
+    text-align:center; color:#fff5f8;
+    font-family:'Georgia', serif; font-style:italic;
+    line-height:1.9; letter-spacing:0.5px;
+    font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+    opacity:0;
+    transition: opacity 1s ease, transform 1s ease;
+    pointer-events:none;
+  }
+  .valentine-card.show { opacity:1; transform: translate(-50%,-50%) scale(1); pointer-events:all; }
+  .valentine-card .vcard-sig { margin-top:1.2rem; font-size:0.9em; color:#ffd0dc; letter-spacing:2px; }
+
+  /* ---- Grande final ---- */
+  .valentine-final {
+    position:absolute; inset:0; z-index:4;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; pointer-events:none;
+    opacity:0; transform: translateY(20px);
+    transition: opacity 2.5s ease, transform 2.5s ease;
+  }
+  .valentine-final.show { opacity:1; transform:translateY(0); pointer-events:all; }
+  .valentine-final-title {
+    font-size: clamp(1.6rem, 6vw, 3rem);
+    font-style:italic; color:#fff; letter-spacing:2px;
+    text-shadow: 0 0 30px rgba(255,150,190,0.9), 0 0 70px rgba(255,200,140,0.5);
+    margin-bottom: 0.8rem;
+  }
+  .valentine-final-sub {
+    font-size: clamp(0.9rem, 2.6vw, 1.2rem);
+    font-style:italic; color: rgba(255,235,240,0.85);
+    letter-spacing:1px; margin-bottom:2rem;
+    text-shadow: 0 0 20px rgba(255,150,190,0.6);
+  }
+  .valentine-secret-btn {
+    font-family:'Georgia', serif; font-style:italic;
+    font-size:13px; letter-spacing:1px; color:#ffe9d6;
+    background: rgba(255,255,255,0.06);
+    border:1px solid rgba(255,210,170,0.35);
+    border-radius:40px; padding:10px 22px;
+    cursor:pointer; backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(255,200,150,0.25);
+    transition: all 0.3s;
+    opacity:0; animation: vFadeIn 1.5s ease 1s forwards;
+  }
+  .valentine-secret-btn:hover { background:rgba(255,255,255,0.14); box-shadow:0 0 30px rgba(255,210,170,0.5); transform:scale(1.05); }
+  @keyframes vFadeIn { to { opacity:1; } }
+
+  /* ---- Carta manuscrita (easter egg) ---- */
+  .valentine-letter {
+    position:fixed; inset:0; z-index:99995;
+    display:none; align-items:center; justify-content:center;
+    background: rgba(5,2,12,0.85); padding:1rem;
+  }
+  .valentine-letter.active { display:flex; }
+  .valentine-letter-card {
+    position:relative;
+    max-width:min(520px, 92vw);
+    background: linear-gradient(160deg, rgba(255,250,240,0.08), rgba(255,230,210,0.04));
+    border:1px solid rgba(255,220,190,0.3);
+    border-radius:18px; padding:2.4rem 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 60px rgba(255,180,150,0.25);
+    font-family: 'Georgia', serif; font-style:italic;
+    color:#fff8ef; line-height:2; letter-spacing:0.5px;
+    font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+    text-align:center;
+    opacity:0; transform: scale(0.9);
+    animation: vLetterIn 1s ease forwards;
+  }
+  @keyframes vLetterIn { to { opacity:1; transform:scale(1); } }
+  .valentine-letter-close {
+    position:absolute; top:10px; right:14px;
+    color:rgba(255,230,210,0.5); cursor:pointer; font-size:18px;
+    transition:color 0.2s;
+  }
+  .valentine-letter-close:hover { color:#fff; }
+  .vletter-sig { margin-top:1rem; color:#ffd9c2; letter-spacing:2px; font-size:0.9em; }
+
+  @media (max-width:600px){
+    .valentine-card, .valentine-text { font-size: 0.95rem; }
+    .valentine-final-title { font-size: clamp(1.4rem, 8vw, 2.2rem); }
+  }
 </style>
 </head>
 <body>
@@ -1596,6 +1841,549 @@ async function startSecretJourney(e) {
   await sleep(400);
   revealVideo();
 }
+</script>
+<!-- ================= EVENTO ESPECIAL: DIA DOS NAMORADOS ================= -->
+<!-- Bloco totalmente isolado — não interfere em nenhuma funcionalidade existente -->
+
+<button class="valentine-fab" id="valentineFab" aria-label="Surpresa de Dia dos Namorados">
+  <span class="vfab-orbit">
+    <span></span><span></span><span></span>
+  </span>
+  <span class="vfab-hearts">
+    <span>❤</span><span>❤</span><span>❤</span><span>❤</span>
+  </span>
+  <span class="vfab-sparkles">
+    <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
+  </span>
+  <span class="vfab-label">❤️ Uma Surpresa de Dia dos Namorados ❤️</span>
+</button>
+
+<div class="valentine-overlay" id="valentineOverlay">
+  <canvas id="valentineCanvas"></canvas>
+  <div class="valentine-close" id="valentineClose">✕</div>
+  <div class="valentine-text" id="valentineText"></div>
+  <div class="valentine-card" id="valentineCard">
+    <p>Você transformou dias comuns em memórias inesquecíveis.</p>
+    <p>Transformou silêncio em paz.</p>
+    <p>Distância em saudade.</p>
+    <p>E momentos simples nos melhores momentos da minha vida.</p>
+    <p>Obrigado por existir.</p>
+    <div class="vcard-sig">Feliz Dia dos Namorados. ❤️</div>
+  </div>
+  <div class="valentine-final" id="valentineFinal">
+    <div class="valentine-final-title">❤️ Feliz Dia dos Namorados ❤️</div>
+    <div class="valentine-final-sub">Obrigado por fazer o meu universo valer a pena.</div>
+    <button class="valentine-secret-btn" id="valentineSecretBtn">🌙 Último Segredo</button>
+  </div>
+</div>
+
+<div class="valentine-letter" id="valentineLetter">
+  <div class="valentine-letter-card">
+    <div class="valentine-letter-close" id="valentineLetterClose">✕</div>
+    <div class="valentine-letter-text">
+      <p>Minha querida Kimberlly,</p>
+      <p>Existem palavras que eu guardo só pra mim — pequenos segredos que nem o universo conhecia até agora.</p>
+      <p>Se eu pudesse fazer um pedido para uma estrela...</p>
+      <p>Eu pediria exatamente você.</p>
+      <div class="vletter-sig">— com todo o meu universo ♡</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   EVENTO ESPECIAL — SURPRESA DE DIA DOS NAMORADOS
+   Bloco isolado em IIFE: não toca em nenhuma variável,
+   função ou elemento já existente no projeto.
+   ============================================================ */
+(function(){
+  const fab        = document.getElementById('valentineFab');
+  const overlay    = document.getElementById('valentineOverlay');
+  const vCanvas    = document.getElementById('valentineCanvas');
+  const vctx       = vCanvas.getContext('2d');
+  const textEl     = document.getElementById('valentineText');
+  const cardEl     = document.getElementById('valentineCard');
+  const finalEl    = document.getElementById('valentineFinal');
+  const closeEl    = document.getElementById('valentineClose');
+  const letterEl   = document.getElementById('valentineLetter');
+  const secretBtn  = document.getElementById('valentineSecretBtn');
+  const letterClose= document.getElementById('valentineLetterClose');
+
+  let vW, vH;
+  function vResize(){ vW = vCanvas.width = window.innerWidth; vH = vCanvas.height = window.innerHeight; }
+  vResize();
+  window.addEventListener('resize', vResize);
+
+  function vWait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  /* ---------------- partículas ---------------- */
+  let particles = [];
+  let bgAlpha = 0;
+  let mode = 'idle';
+  let vRunning = false;
+  let pulseActive = false;
+  let fireworksActive = false;
+
+  function makeParticle(){
+    return {
+      x: Math.random()*vW, y: Math.random()*vH,
+      tx: 0, ty: 0,
+      vx: 0, vy: 0, gravity: 0, decay: 0,
+      size: 1 + Math.random()*2,
+      hue: 335 + Math.random()*20, light: 80,
+      alpha: 0, targetAlpha: 0.9,
+      ease: 0.04,
+      shape: 'dot', rot: 0,
+      twinkle: Math.random()*Math.PI*2,
+      twinkleSpeed: 0.04 + Math.random()*0.05,
+    };
+  }
+
+  function ensureParticles(n){
+    while(particles.length < n) particles.push(makeParticle());
+    if(particles.length > n) particles.length = n;
+  }
+
+  /* ---------------- formas ---------------- */
+  function drawHeart(x,y,size,color){
+    vctx.save();
+    vctx.translate(x,y);
+    vctx.scale(size/10, size/10);
+    vctx.beginPath();
+    vctx.moveTo(0,3);
+    vctx.bezierCurveTo(0,1,-2,-2,-5,-2);
+    vctx.bezierCurveTo(-9,-2,-9,3,-9,3);
+    vctx.bezierCurveTo(-9,7,-5,9,0,13);
+    vctx.bezierCurveTo(5,9,9,7,9,3);
+    vctx.bezierCurveTo(9,3,9,-2,5,-2);
+    vctx.bezierCurveTo(2,-2,0,1,0,3);
+    vctx.closePath();
+    vctx.fillStyle = color;
+    vctx.shadowBlur = 10; vctx.shadowColor = color;
+    vctx.fill();
+    vctx.restore();
+  }
+  function drawStar(x,y,size,color){
+    vctx.save();
+    vctx.translate(x,y);
+    vctx.beginPath();
+    for(let i=0;i<5;i++){
+      const angle = (i*4*Math.PI/5) - Math.PI/2;
+      const px = Math.cos(angle)*size, py = Math.sin(angle)*size;
+      if(i===0) vctx.moveTo(px,py); else vctx.lineTo(px,py);
+    }
+    vctx.closePath();
+    vctx.fillStyle = color;
+    vctx.shadowBlur = 10; vctx.shadowColor = color;
+    vctx.fill();
+    vctx.restore();
+  }
+  function drawPetal(x,y,size,color,rot){
+    vctx.save();
+    vctx.translate(x,y);
+    vctx.rotate(rot);
+    vctx.beginPath();
+    vctx.ellipse(0,0,size,size*0.5,0,0,Math.PI*2);
+    vctx.fillStyle = color;
+    vctx.shadowBlur = 6; vctx.shadowColor = color;
+    vctx.fill();
+    vctx.restore();
+  }
+
+  /* ---------------- alvos: texto e coração ---------------- */
+  function textTargets(text, maxFontSize){
+    const off = document.createElement('canvas');
+    off.width = vW; off.height = vH;
+    const o = off.getContext('2d');
+    o.textAlign = 'center'; o.textBaseline = 'middle';
+    let fontSize = maxFontSize;
+    do {
+      o.font = `bold ${fontSize}px Georgia, serif`;
+      if(o.measureText(text).width < vW*0.92 || fontSize <= 18) break;
+      fontSize -= 4;
+    } while(true);
+    o.fillStyle = '#fff';
+    o.fillText(text, vW/2, vH/2);
+    const data = o.getImageData(0,0,vW,vH).data;
+    const pts = [];
+    const step = Math.max(3, Math.floor(Math.min(vW,vH)/220));
+    for(let y=0;y<vH;y+=step){
+      for(let x=0;x<vW;x+=step){
+        if(data[(y*vW+x)*4+3] > 120) pts.push({x,y});
+      }
+    }
+    for(let i=pts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pts[i],pts[j]]=[pts[j],pts[i]]; }
+    return pts;
+  }
+  function heartTargets(count){
+    const cx = vW/2, cy = vH/2 - vH*0.04;
+    const scale = Math.min(vW,vH) * 0.018;
+    const pts = [];
+    for(let i=0;i<count;i++){
+      const t = Math.random()*Math.PI*2;
+      let x = 16*Math.pow(Math.sin(t),3);
+      let y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+      const f = 0.55 + Math.random()*0.45;
+      x *= scale*f; y *= -scale*f;
+      pts.push({x: cx+x, y: cy+y});
+    }
+    return pts;
+  }
+  function applyTargets(pts, opts={}){
+    ensureParticles(pts.length);
+    particles.forEach((p,i)=>{
+      p.tx = pts[i].x; p.ty = pts[i].y;
+      p.vx = 0; p.vy = 0; p.gravity = 0; p.decay = 0;
+      p.ease = opts.ease ?? 0.04;
+      p.targetAlpha = opts.alpha ?? 0.9;
+      p.shape = opts.shape || 'dot';
+      if(opts.size) p.size = opts.size[0] + Math.random()*(opts.size[1]-opts.size[0]);
+      if(opts.hue)  p.hue  = opts.hue[0] + Math.random()*(opts.hue[1]-opts.hue[0]);
+      if(opts.light) p.light = opts.light;
+    });
+  }
+
+  /* ---------------- loop principal ---------------- */
+  let pulseScale = 1;
+  function vLoop(){
+    vctx.clearRect(0,0,vW,vH);
+    if(bgAlpha > 0){
+      vctx.fillStyle = `rgba(4,1,10,${bgAlpha})`;
+      vctx.fillRect(0,0,vW,vH);
+    }
+
+    pulseScale = pulseActive ? (1 + Math.sin(performance.now()/350) * 0.06) : 1;
+    vctx.save();
+    if(pulseActive){
+      vctx.translate(vW/2, vH/2);
+      vctx.scale(pulseScale, pulseScale);
+      vctx.translate(-vW/2, -vH/2);
+    }
+
+    for(let i = particles.length-1; i >= 0; i--){
+      const p = particles[i];
+      p.x += (p.tx - p.x) * p.ease;
+      p.y += (p.ty - p.y) * p.ease;
+
+      if(mode === 'rain'){
+        p.x += p.vx; p.y += p.vy;
+        if(p.y > vH+20){ p.y = -20; p.x = Math.random()*vW; }
+      }
+      if(mode === 'fireworks' || mode === 'explode'){
+        p.x += p.vx; p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.985; p.vy *= 0.99;
+        if(p.decay) p.alpha -= p.decay;
+      }
+      if(mode === 'aurora'){
+        p.x += p.vx; p.y += p.vy;
+        if(p.y < -20){ p.y = vH+20; p.x = Math.random()*vW; }
+      }
+
+      p.twinkle += p.twinkleSpeed;
+      p.alpha += (p.targetAlpha - p.alpha) * 0.05;
+      const flicker = (mode === 'rain' || mode === 'fireworks') ? 1 : (0.55 + 0.45*Math.sin(p.twinkle));
+      const a = Math.max(0, p.alpha * flicker);
+      if(a <= 0.003 && mode !== 'fireworks') continue;
+
+      const color = `hsla(${p.hue},85%,${p.light}%,${a})`;
+      if(p.shape === 'heart') drawHeart(p.x,p.y,p.size*2.4,color);
+      else if(p.shape === 'star') drawStar(p.x,p.y,p.size*2.6,color);
+      else if(p.shape === 'petal') drawPetal(p.x,p.y,p.size*2,color,p.rot);
+      else {
+        vctx.beginPath();
+        vctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        vctx.fillStyle = color;
+        vctx.shadowBlur = 8; vctx.shadowColor = color;
+        vctx.fill();
+        vctx.shadowBlur = 0;
+      }
+      if(mode === 'fireworks' && p.alpha <= 0) particles.splice(i,1);
+    }
+    vctx.restore();
+
+    if(mode === 'fireworks' && fireworksActive && Math.random() < 0.05){
+      spawnFireworkBurst();
+    }
+
+    if(vRunning) requestAnimationFrame(vLoop);
+  }
+
+  /* ---------------- estágios de partículas ---------------- */
+  function spawnRain(){
+    mode = 'rain';
+    ensureParticles(110);
+    particles.forEach(p=>{
+      p.x = Math.random()*vW;
+      p.y = Math.random()*vH - vH;
+      p.tx = p.x; p.ty = p.y; p.ease = 0;
+      p.vx = (Math.random()-0.5)*0.3;
+      p.vy = 0.5 + Math.random()*1.1;
+      p.size = 1 + Math.random()*2.5;
+      p.targetAlpha = 0.5 + Math.random()*0.5;
+      p.shape = Math.random() < 0.35 ? (Math.random() < 0.5 ? 'heart' : 'star') : 'dot';
+      p.hue = Math.random() < 0.5 ? (330 + Math.random()*30) : (45 + Math.random()*20);
+      p.light = 82;
+    });
+  }
+  function spawnHeartConstellation(){
+    mode = 'converge-heart';
+    applyTargets(heartTargets(170), { ease:0.025, alpha:0.95, shape:'dot', size:[1,3], hue:[335,355], light:80 });
+  }
+  function explodeAndForm(text, fontSize, maxCount, opts={}){
+    mode = 'explode';
+    particles.forEach(p=>{
+      const dx = p.x - vW/2, dy = p.y - vH/2;
+      const dist = Math.max(1, Math.hypot(dx,dy));
+      const speed = 3 + Math.random()*6;
+      p.vx = (dx/dist)*speed + (Math.random()-0.5)*2;
+      p.vy = (dy/dist)*speed + (Math.random()-0.5)*2;
+      p.ease = 0; p.decay = 0;
+    });
+    setTimeout(()=>{
+      const pts = textTargets(text, fontSize).slice(0, maxCount);
+      applyTargets(pts, Object.assign({ ease:0.06, alpha:1, shape:'dot', size:[1,2.6], hue:[340,360], light:88 }, opts));
+      mode = 'text-form';
+    }, 650);
+  }
+  function spawnFireworkBurst(){
+    const cx = vW * (0.18 + Math.random()*0.64);
+    const cy = vH * (0.14 + Math.random()*0.5);
+    const shapes = ['heart','star','dot','petal'];
+    for(let i=0;i<18;i++){
+      const angle = Math.random()*Math.PI*2;
+      const speed = 1.4 + Math.random()*4.2;
+      const p = makeParticle();
+      p.x = cx; p.y = cy; p.tx = cx; p.ty = cy; p.ease = 0;
+      p.vx = Math.cos(angle)*speed; p.vy = Math.sin(angle)*speed;
+      p.gravity = 0.04;
+      p.size = 1.5 + Math.random()*2.5;
+      p.shape = shapes[Math.floor(Math.random()*shapes.length)];
+      p.rot = Math.random()*Math.PI*2;
+      const r = Math.random();
+      p.hue = r < 0.4 ? (335 + Math.random()*25) : (r < 0.7 ? (42 + Math.random()*20) : (200 + Math.random()*60));
+      p.light = 80;
+      p.alpha = 1; p.targetAlpha = 1;
+      p.decay = 0.012 + Math.random()*0.02;
+      particles.push(p);
+    }
+  }
+  function collapseToSingleStar(){
+    mode = 'single-star';
+    particles.forEach((p,i)=>{
+      if(i === 0){
+        p.tx = vW/2; p.ty = vH*0.35; p.ease = 0.05;
+        p.shape = 'star'; p.size = 4; p.hue = 50; p.light = 92; p.targetAlpha = 1;
+      } else {
+        p.targetAlpha = 0; p.ease = 0.02;
+      }
+    });
+    setTimeout(()=>{ particles = particles.slice(0,1); }, 1800);
+  }
+  function spawnAuroraParticles(){
+    mode = 'aurora';
+    ensureParticles(90);
+    particles.forEach(p=>{
+      p.x = Math.random()*vW; p.y = vH + Math.random()*100;
+      p.tx = p.x; p.ty = p.y; p.ease = 0;
+      p.vx = (Math.random()-0.5)*0.3;
+      p.vy = -(0.2 + Math.random()*0.4);
+      p.size = 1 + Math.random()*2.5;
+      p.shape = 'dot'; p.hue = 40 + Math.random()*30; p.light = 84;
+      p.targetAlpha = 0.4 + Math.random()*0.5;
+    });
+  }
+
+  /* ---------------- transições auxiliares ---------------- */
+  function fadeBg(target, duration){
+    return new Promise(resolve=>{
+      const start = bgAlpha, t0 = performance.now();
+      function tick(){
+        const p = Math.min(1, (performance.now()-t0)/duration);
+        bgAlpha = start + (target-start)*p;
+        if(p < 1) requestAnimationFrame(tick); else resolve();
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  function typeLine(text, speed=55){
+    return new Promise(resolve=>{
+      textEl.innerHTML = '<span class="typing-cursor"></span>';
+      let i = 0;
+      function next(){
+        if(i >= text.length){ resolve(); return; }
+        textEl.innerHTML = text.slice(0,++i) + '<span class="typing-cursor"></span>';
+        setTimeout(next, speed + Math.random()*25);
+      }
+      setTimeout(next, 150);
+    });
+  }
+  async function showLine(text, anim='fade', hold=2200){
+    textEl.className = 'valentine-text anim-' + anim;
+    if(anim === 'typing'){
+      textEl.classList.add('show');
+      await typeLine(text);
+    } else {
+      textEl.textContent = text;
+      await vWait(60);
+      textEl.classList.add('show');
+    }
+    await vWait(hold);
+  }
+  async function hideLine(){
+    textEl.classList.remove('show');
+    await vWait(900);
+  }
+  async function showCard(){ cardEl.classList.add('show'); await vWait(900); }
+  async function hideCard(){ cardEl.classList.remove('show'); await vWait(900); }
+
+  /* ---------------- melodia final (Web Audio API) ---------------- */
+  function playFinalMelody(){
+    try{
+      const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+      const chord = [261.63, 329.63, 392.00, 523.25];
+      const master = ctx2.createGain();
+      master.gain.value = 0.0001;
+      master.connect(ctx2.destination);
+      master.gain.exponentialRampToValueAtTime(0.05, ctx2.currentTime + 3);
+      chord.forEach((freq,i)=>{
+        const osc = ctx2.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const g = ctx2.createGain();
+        g.gain.value = 0.7/(i+1);
+        osc.connect(g); g.connect(master);
+        osc.start();
+        osc.frequency.linearRampToValueAtTime(freq*1.01, ctx2.currentTime + 6);
+        osc.frequency.linearRampToValueAtTime(freq, ctx2.currentTime + 12);
+        setTimeout(()=>{ try{ osc.stop(); }catch(e){} }, 16000);
+      });
+      setTimeout(()=>{
+        master.gain.exponentialRampToValueAtTime(0.0001, ctx2.currentTime + 3);
+      }, 13000);
+    }catch(e){}
+  }
+
+  /* ---------------- jornada completa ---------------- */
+  let vBusy = false;
+  async function runValentineEvent(){
+    if(vBusy) return;
+    vBusy = true;
+
+    fab.style.transition = 'opacity .6s ease, transform .6s ease';
+    fab.style.opacity = '0';
+    fab.style.transform = 'scale(0.6)';
+    setTimeout(()=>{ fab.style.display = 'none'; }, 600);
+
+    vResize();
+    overlay.classList.add('active');
+    vRunning = true;
+    requestAnimationFrame(vLoop);
+
+    // ETAPA 1 — o universo para
+    await fadeBg(0.92, 2800);
+    await vWait(400);
+    await showLine('Há momentos que mudam uma vida inteira...', 'typing', 2600);
+    await hideLine();
+
+    // ETAPA 2 — o tempo congela
+    await showLine('Entre bilhões de pessoas...', 'fade', 2000);
+    await hideLine();
+    await showLine('Meu coração encontrou você.', 'scale', 2200);
+    await hideLine();
+    await showLine('E desde então...', 'slide-left', 1800);
+    await hideLine();
+    await showLine('Nunca mais se sentiu sozinho.', 'slide-right', 2400);
+    await hideLine();
+
+    // ETAPA 3 — chuva celestial
+    spawnRain();
+    await vWait(3200);
+
+    // ETAPA 4 — constelação do amor
+    spawnHeartConstellation();
+    await vWait(3400);
+    pulseActive = true;
+    await vWait(2400);
+
+    // ETAPA 5 — revelação
+    pulseActive = false;
+    explodeAndForm('EU TE AMO ❤️', Math.min(vW*0.1, 90), 320, { hue:[340,360], light:90 });
+    await vWait(3200);
+
+    // ETAPA 6 — mensagem secreta
+    await showCard();
+    await vWait(7500);
+    await hideCard();
+
+    // ETAPA 7 — surpresa inesperada
+    mode = 'idle';
+    particles.forEach(p => p.targetAlpha = 0);
+    await fadeBg(1, 1500);
+    await vWait(2200);
+    await showLine('Mas ainda existe algo que você não sabe...', 'fade-slow', 3000);
+    await hideLine();
+    await vWait(600);
+    await showLine('Você é o meu lugar favorito no universo.', 'scale', 3200);
+    await hideLine();
+
+    // ETAPA 8 — o universo escolhe ela
+    fadeBg(0.85, 1500);
+    const ptsName = textTargets('KIMBERLLY', Math.min(vW*0.16, 130)).slice(0, 360);
+    applyTargets(ptsName, { ease:0.035, alpha:1, shape:'dot', size:[1.5,3], hue:[45,60], light:90 });
+    mode = 'text-form';
+    await vWait(3600);
+
+    // ETAPA 9 — fogos celestiais
+    mode = 'fireworks';
+    fireworksActive = true;
+    await vWait(4200);
+    fireworksActive = false;
+    await vWait(1200);
+    particles = particles.filter(p => p.alpha > 0.05);
+
+    // ETAPA 10 — uma única estrela permanece
+    collapseToSingleStar();
+    await vWait(2000);
+    await showLine('Mesmo depois que esta surpresa acabar...', 'fade-slow', 2600);
+    await hideLine();
+    await showLine('Você continuará sendo a minha estrela favorita.', 'fade-slow', 2800);
+    await hideLine();
+    await showLine('Hoje.', 'fade-quick', 1100);
+    await hideLine();
+    await showLine('Amanhã.', 'fade-quick', 1100);
+    await hideLine();
+    await showLine('E em todas as versões do meu futuro.', 'fade-slow', 3200);
+    await hideLine();
+
+    // GRANDE FINAL
+    await fadeBg(0.55, 2500);
+    spawnAuroraParticles();
+    overlay.classList.add('aurora');
+    finalEl.classList.add('show');
+    closeEl.classList.add('show');
+    playFinalMelody();
+
+    vBusy = false;
+  }
+
+  fab.addEventListener('click', runValentineEvent);
+
+  closeEl.addEventListener('click', ()=>{
+    overlay.classList.remove('active','aurora');
+    finalEl.classList.remove('show');
+    cardEl.classList.remove('show');
+    textEl.classList.remove('show');
+    closeEl.classList.remove('show');
+    vRunning = false;
+    mode = 'idle';
+    particles = [];
+    bgAlpha = 0; pulseActive = false; fireworksActive = false;
+  });
+
+  secretBtn.addEventListener('click', ()=>{ letterEl.classList.add('active'); });
+  letterClose.addEventListener('click', ()=>{ letterEl.classList.remove('active'); });
+})();
 </script>
 </body>
 </html>
