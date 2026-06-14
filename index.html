@@ -371,9 +371,9 @@
     border: none; border-radius: 50px; cursor: pointer;
     font-family: 'Georgia', serif; font-size: 13px;
     letter-spacing: 1px; color: #fff8f0;
-    background: linear-gradient(135deg, #ff2e63, #ff8aa6, #ffd98a, #fff6f0, #ff2e63);
+    background: linear-gradient(135deg, #009c3b, #ffdf00, #002776, #ffffff, #009c3b);
     background-size: 400% 400%;
-    box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3);
+    box-shadow: 0 0 25px rgba(0,156,59,0.6), 0 0 50px rgba(255,223,0,0.35);
     animation: vGradientShift 8s ease infinite, vFabFloat 4.5s ease-in-out infinite, vFabPulse 2.6s ease-in-out infinite, vFabAppear 1.8s ease 0.9s forwards;
     opacity: 0;
     transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -382,14 +382,14 @@
   }
   .valentine-fab:hover {
     transform: scale(1.08);
-    box-shadow: 0 0 40px rgba(255,90,140,0.9), 0 0 90px rgba(255,210,140,0.5);
+    box-shadow: 0 0 40px rgba(0,156,59,0.9), 0 0 90px rgba(255,223,0,0.5), 0 0 60px rgba(0,39,118,0.5);
   }
   @keyframes vGradientShift { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
   @keyframes vFabFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
   @keyframes vFabAppear { to { opacity: 1; } }
   @keyframes vFabPulse {
-    0%,100% { box-shadow: 0 0 25px rgba(255,70,120,0.6), 0 0 50px rgba(255,200,120,0.3); }
-    50%     { box-shadow: 0 0 40px rgba(255,110,150,0.9), 0 0 80px rgba(255,220,150,0.5); }
+    0%,100% { box-shadow: 0 0 25px rgba(0,156,59,0.6), 0 0 50px rgba(255,223,0,0.35); }
+    50%     { box-shadow: 0 0 40px rgba(0,39,118,0.8), 0 0 80px rgba(255,223,0,0.55); }
   }
   .valentine-fab::before {
     content:''; position:absolute; inset:-8px; border-radius:60px;
@@ -511,13 +511,66 @@
     margin-left:2px; animation: blink 0.7s step-end infinite; vertical-align:middle;
   }
 
+  /* ---- Moldura neon "varal de bandeirinhas" (festa junina) ---- */
+  .vtext-frame {
+    position: relative;
+    display: inline-block;
+    padding: 1.4rem 2rem 1.6rem;
+    border-radius: 14px;
+    background: rgba(8,2,18,0.35);
+    isolation: isolate;
+    box-shadow:
+      0 0 12px rgba(0,156,59,0.5),
+      0 0 22px rgba(255,223,0,0.4),
+      0 0 32px rgba(0,39,118,0.4),
+      inset 0 0 18px rgba(255,255,255,0.06);
+    animation: vNeonFrameGlow 3.6s ease-in-out infinite;
+  }
+  .vtext-frame::before{
+    content:'';
+    position:absolute; inset:-3px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--vneon-angle, 0deg),
+      #009c3b, #ffdf00, #002776, #ffffff, #009c3b);
+    z-index:-2;
+    filter: blur(2px);
+    animation: vNeonSpin 6s linear infinite;
+  }
+  .vtext-frame::after{
+    content:'';
+    position:absolute; inset:0;
+    border-radius: inherit;
+    background: rgba(8,2,18,0.55);
+    backdrop-filter: blur(2px);
+    z-index:-1;
+  }
+  @keyframes vNeonFrameGlow {
+    0%,100% {
+      box-shadow:
+        0 0 12px rgba(0,156,59,0.5),
+        0 0 22px rgba(255,223,0,0.4),
+        0 0 32px rgba(0,39,118,0.4),
+        inset 0 0 18px rgba(255,255,255,0.06);
+    }
+    50% {
+      box-shadow:
+        0 0 20px rgba(0,156,59,0.85),
+        0 0 36px rgba(255,223,0,0.65),
+        0 0 50px rgba(0,39,118,0.6),
+        inset 0 0 26px rgba(255,255,255,0.12);
+    }
+  }
+  @media (max-width:600px){
+    .vtext-frame { padding: 1rem 1.2rem 1.3rem; border-width:2px; }
+    .vtext-frame::before, .vtext-frame::after { background-size: 16px 7px; height:7px; }
+  }
+
   /* ---- Cartão premium (mensagem secreta) ---- */
   .valentine-card {
     position:absolute; top:50%; left:50%; z-index:3;
     transform: translate(-50%,-50%) scale(0.85);
     max-width: min(560px, 90vw);
     background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,160,190,0.3);
     border-radius: 22px; padding: 2.4rem 2rem;
     backdrop-filter: blur(16px);
     box-shadow: 0 0 50px rgba(255,100,150,0.25), inset 0 0 40px rgba(255,200,220,0.06);
@@ -555,16 +608,21 @@
   }
   .valentine-secret-btn {
     font-family:'Georgia', serif; font-style:italic;
-    font-size:13px; letter-spacing:1px; color:#ffe9d6;
-    background: rgba(255,255,255,0.06);
-    border:1px solid rgba(255,210,170,0.35);
+    font-size:13px; letter-spacing:1px; color:#fffef0;
+    background: linear-gradient(135deg, rgba(0,90,60,0.18), rgba(0,60,140,0.18));
+    border:1px solid rgba(255,223,0,0.4);
     border-radius:40px; padding:10px 22px;
     cursor:pointer; backdrop-filter: blur(8px);
-    box-shadow: 0 0 20px rgba(255,200,150,0.25);
+    box-shadow: 0 0 20px rgba(0,160,90,0.3), 0 0 14px rgba(255,223,0,0.25);
     transition: all 0.3s;
     opacity:0; animation: vFadeIn 1.5s ease 1s forwards;
   }
-  .valentine-secret-btn:hover { background:rgba(255,255,255,0.14); box-shadow:0 0 30px rgba(255,210,170,0.5); transform:scale(1.05); }
+  .valentine-secret-btn:hover {
+    background: linear-gradient(135deg, rgba(0,110,75,0.28), rgba(0,80,180,0.28));
+    box-shadow: 0 0 30px rgba(255,223,0,0.5), 0 0 24px rgba(0,170,100,0.4);
+    border-color: rgba(255,255,255,0.5);
+    transform:scale(1.05);
+  }
   @keyframes vFadeIn { to { opacity:1; } }
 
   /* ---- Carta manuscrita (easter egg) ---- */
@@ -578,7 +636,6 @@
     position:relative;
     max-width:min(520px, 92vw);
     background: linear-gradient(160deg, rgba(255,250,240,0.08), rgba(255,230,210,0.04));
-    border:1px solid rgba(255,220,190,0.3);
     border-radius:18px; padding:2.4rem 2rem;
     backdrop-filter: blur(20px);
     box-shadow: 0 0 60px rgba(255,180,150,0.25);
@@ -598,9 +655,327 @@
   .valentine-letter-close:hover { color:#fff; }
   .vletter-sig { margin-top:1rem; color:#ffd9c2; letter-spacing:2px; font-size:0.9em; }
 
+  /* ---- Borda neon animada (verde/amarelo/azul/branco) para caixas de texto ---- */
+  .valentine-card,
+  .valentine-letter-card {
+    --neon-border-width: 3px;
+  }
+  .valentine-card::before,
+  .valentine-letter-card::before {
+    content:'';
+    position:absolute;
+    inset: calc(-1 * var(--neon-border-width));
+    border-radius: inherit;
+    background: conic-gradient(from var(--vneon-angle, 0deg),
+      #009c3b, #ffdf00, #002776, #ffffff, #009c3b);
+    z-index:-1;
+    filter: blur(2px);
+    animation: vNeonSpin 6s linear infinite;
+    opacity:0.95;
+  }
+  .valentine-card::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius: inherit;
+    background: rgba(20,8,30,0.82);
+    backdrop-filter: blur(16px);
+    z-index:0;
+  }
+  .valentine-letter-card::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius: inherit;
+    background: linear-gradient(160deg, rgba(40,22,18,0.88), rgba(30,18,14,0.9));
+    backdrop-filter: blur(20px);
+    z-index:0;
+  }
+  .valentine-card > *,
+  .valentine-letter-card > * { position:relative; z-index:1; }
+  .valentine-card,
+  .valentine-letter-card { isolation:isolate; }
+
+  @property --vneon-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes vNeonSpin {
+    from { --vneon-angle: 0deg; }
+    to   { --vneon-angle: 360deg; }
+  }
+  /* fallback de brilho colorido caso @property/conic-gradient não anime no navegador */
+  .valentine-card,
+  .valentine-letter-card {
+    box-shadow:
+      0 0 18px rgba(0,156,59,0.45),
+      0 0 30px rgba(255,223,0,0.35),
+      0 0 42px rgba(0,39,118,0.35),
+      inset 0 0 30px rgba(255,255,255,0.05);
+    animation: vCardGlow 4s ease-in-out infinite;
+  }
+  .valentine-letter-card { animation: vLetterIn 1s ease forwards, vCardGlow 4s ease-in-out infinite; }
+  @keyframes vCardGlow {
+    0%,100% {
+      box-shadow:
+        0 0 18px rgba(0,156,59,0.45),
+        0 0 30px rgba(255,223,0,0.35),
+        0 0 42px rgba(0,39,118,0.35),
+        inset 0 0 30px rgba(255,255,255,0.05);
+    }
+    33% {
+      box-shadow:
+        0 0 24px rgba(255,223,0,0.55),
+        0 0 36px rgba(0,39,118,0.45),
+        0 0 48px rgba(0,156,59,0.4),
+        inset 0 0 34px rgba(255,255,255,0.07);
+    }
+    66% {
+      box-shadow:
+        0 0 24px rgba(0,39,118,0.55),
+        0 0 36px rgba(0,156,59,0.45),
+        0 0 48px rgba(255,223,0,0.4),
+        inset 0 0 34px rgba(255,255,255,0.07);
+    }
+  }
+
   @media (max-width:600px){
     .valentine-card, .valentine-text { font-size: 0.95rem; }
     .valentine-final-title { font-size: clamp(1.4rem, 8vw, 2.2rem); }
+  }
+
+  /* ============================================================
+     EDIÇÃO ESPECIAL — GALÁXIA × SELEÇÃO BRASILEIRA
+     Bloco 100% aditivo: apenas estilos visuais novos.
+     Não altera nenhuma classe, id, função ou comportamento existente.
+     ============================================================ */
+
+  :root{
+    --br-verde: #009C3B;
+    --br-amarelo: #FFDF00;
+    --br-azul: #002776;
+    --br-branco: #FFFFFF;
+  }
+
+  /* ---- Nebulosas e reflexos sutis no fundo (não cobre o céu existente) ---- */
+  body::before {
+    content:'';
+    position: fixed; inset:0; z-index: 1; pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 40% at 12% 12%, rgba(0,156,59,0.07), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 88% 18%, rgba(0,39,118,0.10), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 95%, rgba(255,223,0,0.045), transparent 65%);
+    mix-blend-mode: screen;
+  }
+
+  /* ---- partículas douradas extras flutuando no fundo ---- */
+  .br-gold-dust { position: fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .br-gold-dust span {
+    position:absolute; width:3px; height:3px; border-radius:50%;
+    background: var(--br-amarelo);
+    box-shadow: 0 0 6px 2px rgba(255,223,0,0.6);
+    opacity:0.55;
+    animation: brDustFloat 16s linear infinite;
+  }
+  .br-gold-dust span:nth-child(1){ left:8%;  top:92%; animation-delay:0s; }
+  .br-gold-dust span:nth-child(2){ left:22%; top:88%; animation-delay:-3s; width:2px; height:2px; }
+  .br-gold-dust span:nth-child(3){ left:38%; top:96%; animation-delay:-7s; }
+  .br-gold-dust span:nth-child(4){ left:55%; top:90%; animation-delay:-11s; width:2px; height:2px; }
+  .br-gold-dust span:nth-child(5){ left:70%; top:94%; animation-delay:-5s; }
+  .br-gold-dust span:nth-child(6){ left:85%; top:89%; animation-delay:-9s; width:2px; height:2px; }
+  .br-gold-dust span:nth-child(7){ left:95%; top:97%; animation-delay:-13s; }
+  @keyframes brDustFloat {
+    0%   { transform: translateY(0) translateX(0); opacity:0; }
+    10%  { opacity:0.6; }
+    50%  { transform: translateY(-45vh) translateX(10px); opacity:0.8; }
+    90%  { opacity:0.4; }
+    100% { transform: translateY(-95vh) translateX(-6px); opacity:0; }
+  }
+
+  /* ---- estrelas extras coloridas (verde / amarelo / azul) ---- */
+  .br-extra-stars { position: fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .br-extra-stars span {
+    position:absolute; border-radius:50%;
+    animation: brStarTwinkle 3.5s ease-in-out infinite;
+  }
+  .br-extra-stars .g { background: var(--br-verde);  box-shadow: 0 0 6px 2px rgba(0,156,59,0.7); }
+  .br-extra-stars .y { background: var(--br-amarelo); box-shadow: 0 0 6px 2px rgba(255,223,0,0.7); }
+  .br-extra-stars .b { background: var(--br-azul);    box-shadow: 0 0 7px 2px rgba(60,90,200,0.7); }
+  .br-extra-stars span:nth-child(1)  { left:6%;  top:14%; width:3px; height:3px; animation-delay:0s; }
+  .br-extra-stars span:nth-child(2)  { left:18%; top:62%; width:2px; height:2px; animation-delay:-1s; }
+  .br-extra-stars span:nth-child(3)  { left:30%; top:8%;  width:3px; height:3px; animation-delay:-2s; }
+  .br-extra-stars span:nth-child(4)  { left:46%; top:40%; width:2px; height:2px; animation-delay:-0.5s; }
+  .br-extra-stars span:nth-child(5)  { left:62%; top:20%; width:3px; height:3px; animation-delay:-1.5s; }
+  .br-extra-stars span:nth-child(6)  { left:74%; top:70%; width:2px; height:2px; animation-delay:-2.5s; }
+  .br-extra-stars span:nth-child(7)  { left:88%; top:34%; width:3px; height:3px; animation-delay:-0.8s; }
+  .br-extra-stars span:nth-child(8)  { left:12%; top:80%; width:2px; height:2px; animation-delay:-1.8s; }
+  .br-extra-stars span:nth-child(9)  { left:54%; top:84%; width:3px; height:3px; animation-delay:-2.2s; }
+  .br-extra-stars span:nth-child(10) { left:80%; top:8%;  width:2px; height:2px; animation-delay:-3s; }
+  @keyframes brStarTwinkle {
+    0%,100% { opacity:0.25; transform: scale(0.8); }
+    50%     { opacity:0.95; transform: scale(1.3); }
+  }
+
+  /* ---- Bandeirinhas decorativas (estilo festa junina / Copa) ---- */
+  .br-bunting {
+    position: relative; z-index: 4;
+    display:flex; justify-content:center;
+    width:100%; max-width: 640px;
+    margin: 0 auto 0.4rem;
+    pointer-events:none;
+    opacity: 0.9;
+    animation: fadeDown 1.6s ease 0.1s forwards; opacity:0;
+  }
+  .br-bunting .br-line {
+    position:absolute; left:4%; right:4%; top:13px;
+    height:1px; background: rgba(255,255,255,0.18);
+  }
+  .br-bunting .br-flags {
+    display:flex; justify-content:space-between; width:100%; padding: 0 4%;
+  }
+  .br-bunting .br-flag {
+    width: 16px; height: 22px;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+    transform-origin: top center;
+    animation: brFlagSway 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.25));
+  }
+  .br-bunting .br-flag:nth-child(3n+1) { background: var(--br-verde); }
+  .br-bunting .br-flag:nth-child(3n+2) { background: var(--br-amarelo); }
+  .br-bunting .br-flag:nth-child(3n)   { background: var(--br-azul); }
+  .br-bunting .br-flag:nth-child(odd)  { animation-delay: -0.4s; }
+  .br-bunting .br-flag:nth-child(even) { animation-delay: -1.6s; }
+  @keyframes brFlagSway {
+    0%,100% { transform: rotate(-6deg); }
+    50%     { transform: rotate(6deg); }
+  }
+  @media (max-width:600px){
+    .br-bunting .br-flag { width:12px; height:17px; }
+  }
+
+  /* bandeirinhas verticais discretas nas laterais (decoração de canto) */
+  .br-side-flags { position: fixed; top:0; bottom:0; z-index:1; pointer-events:none; width:24px; opacity:0.5; }
+  .br-side-flags.left  { left:6px; }
+  .br-side-flags.right { right:6px; }
+  .br-side-flags .br-flag-v {
+    position:absolute; width:13px; height:18px;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+    animation: brFlagSway 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.2));
+  }
+  .br-side-flags .br-flag-v:nth-child(1) { top:18%; background: var(--br-verde);   animation-delay:0s; }
+  .br-side-flags .br-flag-v:nth-child(2) { top:46%; background: var(--br-amarelo); animation-delay:-1.3s; }
+  .br-side-flags .br-flag-v:nth-child(3) { top:74%; background: var(--br-azul);   animation-delay:-2.6s; }
+  @media (max-width:760px){
+    .br-side-flags { display:none; }
+  }
+
+  /* ============================================================
+     Bordas neon "energia espacial" — verde / amarelo / azul
+     aplicadas às caixas principais já existentes
+     ============================================================ */
+  .card,
+  .player,
+  .video-card,
+  .secret-btn,
+  .btn,
+  .valentine-card,
+  .valentine-letter-card {
+    position: relative;
+  }
+  .card::after,
+  .player::after,
+  .video-card::after,
+  .secret-btn::after,
+  .btn::after,
+  .valentine-card::after,
+  .valentine-letter-card::after {
+    pointer-events: none;
+  }
+
+  /* halo neon externo (camada extra, não substitui sombras existentes) */
+  .card,
+  .player,
+  .video-card,
+  .secret-btn,
+  .btn,
+  .valentine-card,
+  .valentine-letter-card {
+    --br-glow: 0 0 14px rgba(0,156,59,0.28), 0 0 26px rgba(255,223,0,0.22), 0 0 38px rgba(0,39,118,0.30);
+    box-shadow: var(--br-glow), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  /* mantém os glows próprios desses elementos somando (não removendo) o que já existia,
+     e soma brNeonPulse às animações já existentes de cada elemento sem substituí-las */
+  .card { box-shadow: var(--br-glow), 0 0 40px rgba(180,120,255,0.10); animation: fadeUp 2s ease 1s forwards, brNeonPulse 6s ease-in-out infinite; }
+  .player { box-shadow: var(--br-glow); animation: fadeUp 2s ease 0.6s forwards, brNeonPulse 6s ease-in-out infinite; }
+  .video-card { box-shadow: var(--br-glow), 0 0 40px rgba(140,90,255,0.3), 0 0 80px rgba(80,40,180,0.2), inset 0 0 40px rgba(180,140,255,0.05); animation: cardGlow 3s ease-in-out infinite, brNeonPulse 6s ease-in-out infinite; }
+  .secret-btn { box-shadow: var(--br-glow), 0 0 12px rgba(180,120,255,0.3); animation: secretPulse 2.8s ease-in-out infinite, brNeonPulse 6s ease-in-out infinite; }
+  .btn { box-shadow: var(--br-glow); animation: fadeUp 2s ease 2.6s forwards, brNeonPulse 6s ease-in-out infinite; }
+  .valentine-card { animation: vCardGlow 4s ease-in-out infinite, brNeonPulse 6s ease-in-out infinite; }
+  .valentine-letter-card { animation: vLetterIn 1s ease forwards, vCardGlow 4s ease-in-out infinite, brNeonPulse 6s ease-in-out infinite; }
+
+  @keyframes brNeonPulse {
+    0%,100% { --br-glow: 0 0 14px rgba(0,156,59,0.28), 0 0 26px rgba(255,223,0,0.22), 0 0 38px rgba(0,39,118,0.30); }
+    33%     { --br-glow: 0 0 18px rgba(255,223,0,0.32), 0 0 30px rgba(0,39,118,0.28), 0 0 42px rgba(0,156,59,0.26); }
+    66%     { --br-glow: 0 0 18px rgba(0,39,118,0.32), 0 0 30px rgba(0,156,59,0.28), 0 0 42px rgba(255,223,0,0.26); }
+  }
+
+  /* borda fina com leve gradiente verde/amarelo/azul somada à borda existente via outline */
+  .card,
+  .player,
+  .video-card,
+  .secret-btn,
+  .btn,
+  .valentine-card,
+  .valentine-letter-card {
+    outline: 1px solid rgba(255,223,0,0.10);
+    outline-offset: 2px;
+    transition: box-shadow 0.4s ease, outline-color 0.4s ease, transform 0.3s ease;
+  }
+
+  /* hover premium: glow verde/amarelo mais vivo nos botões */
+  .btn:hover,
+  .secret-btn:hover {
+    outline-color: rgba(0,156,59,0.35);
+  }
+
+  /* ---- Efeito especial: estrela cadente Brasil ao hover ---- */
+  .card, .player, .video-card, .secret-btn, .btn,
+  .valentine-card, .valentine-letter-card { overflow: hidden; }
+
+  .card::before,
+  .player::before,
+  .secret-btn::before,
+  .btn::before {
+    /* preserva pseudo-elementos já usados pelo .card sem sobrescrever */
+  }
+
+  .br-shooting-star {
+    position:absolute; top:-6px; left:-20%;
+    width: 70px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--br-amarelo) 35%, var(--br-branco) 55%, var(--br-verde) 75%, transparent);
+    border-radius: 2px;
+    opacity:0;
+    transform: rotate(18deg) translateX(0);
+    pointer-events:none;
+    z-index: 5;
+    filter: drop-shadow(0 0 6px rgba(255,223,0,0.7)) drop-shadow(0 0 10px rgba(0,156,59,0.5));
+  }
+  .card:hover .br-shooting-star,
+  .player:hover .br-shooting-star,
+  .video-card:hover .br-shooting-star,
+  .secret-btn:hover .br-shooting-star,
+  .btn:hover .br-shooting-star,
+  .valentine-card:hover .br-shooting-star,
+  .valentine-letter-card:hover .br-shooting-star {
+    animation: brShootingStar 0.9s ease-out;
+  }
+  @keyframes brShootingStar {
+    0%   { opacity:0; transform: rotate(18deg) translate(-10%, -10%); }
+    15%  { opacity:1; }
+    80%  { opacity:0.8; }
+    100% { opacity:0; transform: rotate(18deg) translate(160%, 90%); }
   }
 </style>
 </head>
@@ -609,7 +984,31 @@
 <canvas id="stars"></canvas>
 <canvas id="fxCanvas"></canvas>
 
+<!-- ===== Decoração Edição Especial Galáxia × Brasil (100% visual/aditivo) ===== -->
+<div class="br-gold-dust" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+<div class="br-extra-stars" aria-hidden="true">
+  <span class="g"></span><span class="y"></span><span class="b"></span><span class="g"></span><span class="y"></span>
+  <span class="b"></span><span class="g"></span><span class="y"></span><span class="b"></span><span class="g"></span>
+</div>
+<div class="br-side-flags left" aria-hidden="true">
+  <span class="br-flag-v"></span><span class="br-flag-v"></span><span class="br-flag-v"></span>
+</div>
+<div class="br-side-flags right" aria-hidden="true">
+  <span class="br-flag-v"></span><span class="br-flag-v"></span><span class="br-flag-v"></span>
+</div>
+
 <div class="scene">
+
+  <div class="br-bunting" aria-hidden="true">
+    <div class="br-line"></div>
+    <div class="br-flags">
+      <span class="br-flag"></span><span class="br-flag"></span><span class="br-flag"></span>
+      <span class="br-flag"></span><span class="br-flag"></span><span class="br-flag"></span>
+      <span class="br-flag"></span><span class="br-flag"></span><span class="br-flag"></span>
+    </div>
+  </div>
 
   <div class="title-wrap">
     <div class="subtitle">para a minha</div>
@@ -1863,7 +2262,7 @@ async function startSecretJourney(e) {
 <div class="valentine-overlay" id="valentineOverlay">
   <canvas id="valentineCanvas"></canvas>
   <div class="valentine-close" id="valentineClose">✕</div>
-  <div class="valentine-text" id="valentineText"></div>
+  <div class="valentine-text" id="valentineText"><span class="vtext-frame" id="valentineTextFrame"></span></div>
   <div class="valentine-card" id="valentineCard">
     <p>Você transformou dias comuns em memórias inesquecíveis.</p>
     <p>Transformou silêncio em paz.</p>
@@ -1904,6 +2303,7 @@ async function startSecretJourney(e) {
   const vCanvas    = document.getElementById('valentineCanvas');
   const vctx       = vCanvas.getContext('2d');
   const textEl     = document.getElementById('valentineText');
+  const frameEl    = document.getElementById('valentineTextFrame');
   const cardEl     = document.getElementById('valentineCard');
   const finalEl    = document.getElementById('valentineFinal');
   const closeEl    = document.getElementById('valentineClose');
@@ -2152,7 +2552,7 @@ async function startSecretJourney(e) {
     const cx = vW * (0.18 + Math.random()*0.64);
     const cy = vH * (0.14 + Math.random()*0.5);
     const shapes = ['heart','star','dot','petal'];
-    for(let i=0;i<18;i++){
+    for(let i=0;i<22;i++){
       const angle = Math.random()*Math.PI*2;
       const speed = 1.4 + Math.random()*4.2;
       const p = makeParticle();
@@ -2163,8 +2563,11 @@ async function startSecretJourney(e) {
       p.shape = shapes[Math.floor(Math.random()*shapes.length)];
       p.rot = Math.random()*Math.PI*2;
       const r = Math.random();
-      p.hue = r < 0.4 ? (335 + Math.random()*25) : (r < 0.7 ? (42 + Math.random()*20) : (200 + Math.random()*60));
-      p.light = 80;
+      p.hue = r < 0.3 ? (335 + Math.random()*25)        // rosa/rubi
+            : r < 0.5 ? (42 + Math.random()*18)         // dourado/amarelo
+            : r < 0.75 ? (205 + Math.random()*40)       // azul
+            : (110 + Math.random()*40);                 // verde
+      p.light = r < 0.5 ? 80 : 88;
       p.alpha = 1; p.targetAlpha = 1;
       p.decay = 0.012 + Math.random()*0.02;
       particles.push(p);
@@ -2191,7 +2594,9 @@ async function startSecretJourney(e) {
       p.vx = (Math.random()-0.5)*0.3;
       p.vy = -(0.2 + Math.random()*0.4);
       p.size = 1 + Math.random()*2.5;
-      p.shape = 'dot'; p.hue = 40 + Math.random()*30; p.light = 84;
+      p.shape = 'dot';
+      p.hue = Math.random() < 0.7 ? (40 + Math.random()*30) : (Math.random() < 0.5 ? (200 + Math.random()*40) : (120 + Math.random()*30));
+      p.light = 84;
       p.targetAlpha = 0.4 + Math.random()*0.5;
     });
   }
@@ -2210,11 +2615,11 @@ async function startSecretJourney(e) {
   }
   function typeLine(text, speed=55){
     return new Promise(resolve=>{
-      textEl.innerHTML = '<span class="typing-cursor"></span>';
+      frameEl.innerHTML = '<span class="typing-cursor"></span>';
       let i = 0;
       function next(){
         if(i >= text.length){ resolve(); return; }
-        textEl.innerHTML = text.slice(0,++i) + '<span class="typing-cursor"></span>';
+        frameEl.innerHTML = text.slice(0,++i) + '<span class="typing-cursor"></span>';
         setTimeout(next, speed + Math.random()*25);
       }
       setTimeout(next, 150);
@@ -2226,7 +2631,7 @@ async function startSecretJourney(e) {
       textEl.classList.add('show');
       await typeLine(text);
     } else {
-      textEl.textContent = text;
+      frameEl.textContent = text;
       await vWait(60);
       textEl.classList.add('show');
     }
@@ -2385,6 +2790,21 @@ async function startSecretJourney(e) {
 
   secretBtn.addEventListener('click', ()=>{ letterEl.classList.add('active'); });
   letterClose.addEventListener('click', ()=>{ letterEl.classList.remove('active'); });
+})();
+</script>
+
+<!-- ===== Decoração Edição Especial Galáxia × Brasil — injeção visual isolada ===== -->
+<script>
+(function(){
+  // Apenas adiciona um elemento decorativo (estrela cadente Brasil) dentro
+  // das caixas principais, sem alterar nenhuma classe, id ou comportamento existente.
+  var brTargets = document.querySelectorAll('.card, .player, .video-card, .secret-btn, .btn, .valentine-card, .valentine-letter-card');
+  brTargets.forEach(function(el){
+    var star = document.createElement('span');
+    star.className = 'br-shooting-star';
+    star.setAttribute('aria-hidden', 'true');
+    el.appendChild(star);
+  });
 })();
 </script>
 </body>
