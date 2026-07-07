@@ -602,6 +602,193 @@
     .valentine-card, .valentine-text { font-size: 0.95rem; }
     .valentine-final-title { font-size: clamp(1.4rem, 8vw, 2.2rem); }
   }
+
+  /* ============================================================
+     NOSSA GALERIA — cofre de memórias
+     (bloco isolado — não altera nada acima)
+     ============================================================ */
+
+  .gallery-fab {
+    position: relative; z-index: 45;
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 2.2rem 0;
+    padding: 13px 28px;
+    border: 1px solid rgba(240,208,128,0.45);
+    border-radius: 50px; cursor: pointer;
+    font-family: 'Georgia', serif; font-size: 13px; letter-spacing: 1.5px;
+    color: #ffe9c0;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(240,200,120,0.25);
+    animation: gFabFloat 4.8s ease-in-out infinite, gFabAppear 1.8s ease 1.2s forwards;
+    opacity: 0;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+  .gallery-fab:hover {
+    transform: scale(1.07);
+    background: rgba(240,200,120,0.1);
+    border-color: rgba(255,225,160,0.9);
+    box-shadow: 0 0 32px rgba(240,208,128,0.55), 0 0 60px rgba(200,160,255,0.2);
+    color: #fff;
+  }
+  @keyframes gFabFloat { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-5px); } }
+  @keyframes gFabAppear { to { opacity: 1; } }
+  .gallery-fab-icon { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+  .gallery-fab-icon span {
+    position: absolute; width: 5px; height: 5px; border-radius: 1px;
+    background: #ffe9c0; box-shadow: 0 0 6px rgba(255,225,160,0.9);
+    animation: gIconTwinkle 2.4s ease-in-out infinite;
+  }
+  .gallery-fab-icon span:nth-child(1){ top:0; left:0; animation-delay:0s; }
+  .gallery-fab-icon span:nth-child(2){ top:2px; right:0; animation-delay:0.4s; }
+  .gallery-fab-icon span:nth-child(3){ bottom:0; left:3px; animation-delay:0.8s; }
+  @keyframes gIconTwinkle { 0%,100%{ opacity:0.4; transform:scale(0.8); } 50%{ opacity:1; transform:scale(1.15); } }
+
+  #galleryOverlay {
+    position: fixed; inset: 0; z-index: 99980;
+    display: none; overflow-y: auto;
+    background: rgba(4,7,18,0.94);
+    backdrop-filter: blur(6px);
+    padding: 3.5rem 1.2rem 4rem;
+  }
+  #galleryOverlay.active { display: block; }
+  #galleryStarsBg {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  }
+  .gallery-header {
+    text-align: center; margin-bottom: 2.4rem;
+    animation: fadeUp 1s ease forwards; opacity: 0;
+  }
+  .gallery-header .g-eyebrow {
+    font-size: 12px; letter-spacing: 5px; color: rgba(240,208,128,0.7);
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .gallery-header h2 {
+    font-size: clamp(1.8rem, 6vw, 2.6rem); font-style: italic; font-weight: 400;
+    color: #fff; text-shadow: 0 0 30px rgba(240,208,128,0.5), 0 0 60px rgba(180,140,255,0.3);
+  }
+  .gallery-header p {
+    margin-top: 0.6rem; font-size: 14px; font-style: italic;
+    color: rgba(220,210,240,0.55);
+  }
+  .gallery-close {
+    position: fixed; top: 18px; right: 22px; z-index: 5;
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.65);
+    font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .gallery-close:hover { color:#fff; background: rgba(255,255,255,0.16); }
+
+  .gallery-grid {
+    max-width: 980px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 22px 18px;
+  }
+  .g-card {
+    position: relative;
+    background: #100c1e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 10px 10px 34px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45), 0 0 0 rgba(240,208,128,0);
+    cursor: pointer;
+    opacity: 0; transform: translateY(24px) rotate(var(--tilt,0deg));
+    animation: gCardIn 0.8s ease forwards;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .g-card:nth-child(3n+1){ --tilt: -2.5deg; }
+  .g-card:nth-child(3n+2){ --tilt: 1.5deg; }
+  .g-card:nth-child(3n){ --tilt: -1deg; }
+  .g-card:hover {
+    transform: translateY(-6px) rotate(0deg) scale(1.035);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.55), 0 0 30px rgba(240,208,128,0.25);
+    z-index: 2;
+  }
+  @keyframes gCardIn { to { opacity: 1; transform: translateY(0) rotate(var(--tilt,0deg)); } }
+  .g-card .g-photo-wrap {
+    position: relative; width: 100%; aspect-ratio: 1/1;
+    border-radius: 4px; overflow: hidden; background: #1a1530;
+  }
+  .g-card img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: saturate(0.96) contrast(1.02);
+  }
+  .g-card .g-shine {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 45%);
+    pointer-events: none;
+  }
+  .g-card .g-caption {
+    position: absolute; bottom: 8px; left: 0; right: 0;
+    text-align: center; font-size: 12px; font-style: italic;
+    color: rgba(230,220,255,0.6); letter-spacing: 0.5px;
+    padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .g-card .g-pin {
+    position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+    width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffe9c0, #b8862e);
+    box-shadow: 0 0 8px rgba(240,200,120,0.7), 0 2px 3px rgba(0,0,0,0.5);
+  }
+
+  .g-empty {
+    grid-column: 1 / -1;
+    text-align: center; padding: 3rem 1rem;
+    color: rgba(220,210,240,0.45); font-style: italic; font-size: 14px;
+    line-height: 1.8;
+  }
+  .g-empty .g-empty-icon { font-size: 28px; margin-bottom: 0.8rem; opacity: 0.6; }
+
+  .gallery-footer-hint {
+    max-width: 640px; margin: 2.6rem auto 0; text-align: center;
+    font-size: 12.5px; color: rgba(200,190,220,0.4); line-height: 1.8;
+    font-style: italic; letter-spacing: 0.3px;
+  }
+
+  /* ---- LIGHTBOX ---- */
+  #galleryLightbox {
+    position: fixed; inset: 0; z-index: 99990;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(2,4,10,0.92); padding: 2rem 1rem;
+  }
+  #galleryLightbox.active { display: flex; }
+  .g-lightbox-inner {
+    position: relative; max-width: min(820px, 94vw); max-height: 88vh;
+    opacity: 0; transform: scale(0.92);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .g-lightbox-inner.show { opacity: 1; transform: scale(1); }
+  .g-lightbox-inner img {
+    max-width: 100%; max-height: 78vh; border-radius: 10px; display: block;
+    box-shadow: 0 0 60px rgba(180,140,255,0.25), 0 0 120px rgba(0,0,0,0.6);
+    margin: 0 auto;
+  }
+  .g-lightbox-caption {
+    margin-top: 1rem; text-align: center; font-style: italic;
+    color: rgba(230,220,255,0.75); font-size: 14px; letter-spacing: 0.5px;
+    text-shadow: 0 0 15px rgba(180,140,255,0.4);
+  }
+  .g-lightbox-close, .g-lightbox-prev, .g-lightbox-next {
+    position: absolute; color: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .g-lightbox-close { top: -18px; right: -18px; width: 36px; height: 36px; font-size: 16px; }
+  .g-lightbox-prev, .g-lightbox-next {
+    top: 50%; transform: translateY(-50%); width: 42px; height: 42px; font-size: 18px;
+  }
+  .g-lightbox-prev { left: -54px; }
+  .g-lightbox-next { right: -54px; }
+  .g-lightbox-close:hover, .g-lightbox-prev:hover, .g-lightbox-next:hover { color:#fff; background: rgba(255,255,255,0.18); }
+  @media (max-width: 700px){
+    .g-lightbox-prev { left: 6px; }
+    .g-lightbox-next { right: 6px; }
+    .g-lightbox-close { top: -42px; right: 0; }
+  }
 </style>
 </head>
 <body>
@@ -646,6 +833,11 @@
       <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
     </span>
     <span class="vfab-label">❤️ Uma Surpresa de Dia dos Namorados ❤️</span>
+  </button>
+
+  <button class="gallery-fab" id="galleryFab" aria-label="Nossa Galeria">
+    <span class="gallery-fab-icon"><span></span><span></span><span></span></span>
+    <span>✦ Nossa Galeria ✦</span>
   </button>
 
   <div class="card">
@@ -2385,6 +2577,193 @@ async function startSecretJourney(e) {
 
   secretBtn.addEventListener('click', ()=>{ letterEl.classList.add('active'); });
   letterClose.addEventListener('click', ()=>{ letterEl.classList.remove('active'); });
+})();
+</script>
+
+<!-- ================= NOSSA GALERIA ================= -->
+<!-- Bloco totalmente isolado — basta editar o array PHOTOS abaixo -->
+
+<div id="galleryOverlay">
+  <canvas id="galleryStarsBg"></canvas>
+  <button class="gallery-close" id="galleryClose">✕</button>
+  <div class="gallery-header">
+    <div class="g-eyebrow">✦ nosso cofre de memórias ✦</div>
+    <h2>Nossa Galeria</h2>
+    <p>cada foto, um pedacinho do nosso universo</p>
+  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
+  <div class="gallery-footer-hint" id="galleryHint"></div>
+</div>
+
+<div id="galleryLightbox">
+  <div class="g-lightbox-inner" id="galleryLightboxInner">
+    <button class="g-lightbox-close" id="galleryLightboxClose">✕</button>
+    <button class="g-lightbox-prev" id="galleryLightboxPrev">‹</button>
+    <button class="g-lightbox-next" id="galleryLightboxNext">›</button>
+    <img id="galleryLightboxImg" src="" alt="">
+    <div class="g-lightbox-caption" id="galleryLightboxCaption"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   NOSSA GALERIA — bloco isolado, não toca em nada do resto
+   ============================================================
+
+   COMO ADICIONAR SUAS FOTOS:
+   1) Crie uma pasta "assets/galeria/" ao lado deste arquivo .html
+   2) Coloque suas fotos lá (ex: assets/galeria/foto1.jpg)
+   3) Adicione uma linha no array PHOTOS abaixo pra cada foto,
+      com o caminho do arquivo e uma legenda (opcional).
+
+   Exemplo:
+   { src: 'assets/galeria/foto1.jpg', caption: 'Nosso primeiro encontro' },
+*/
+const PHOTOS = [
+  { src: 'assets/galeria/2026-07-02 at 04.38.09.jpeg', caption: '' },
+  { src: 'assets/galeria/2026-07-02 at 04.38.13.jpeg', caption: '' },
+];
+
+(function(){
+  const fab       = document.getElementById('galleryFab');
+  const overlay   = document.getElementById('galleryOverlay');
+  const closeBtn  = document.getElementById('galleryClose');
+  const grid      = document.getElementById('galleryGrid');
+  const hint      = document.getElementById('galleryHint');
+  const lightbox  = document.getElementById('galleryLightbox');
+  const lbInner   = document.getElementById('galleryLightboxInner');
+  const lbImg     = document.getElementById('galleryLightboxImg');
+  const lbCaption = document.getElementById('galleryLightboxCaption');
+  const lbClose   = document.getElementById('galleryLightboxClose');
+  const lbPrev    = document.getElementById('galleryLightboxPrev');
+  const lbNext    = document.getElementById('galleryLightboxNext');
+  const bgCanvas  = document.getElementById('galleryStarsBg');
+  const bgCtx     = bgCanvas.getContext('2d');
+
+  let currentIndex = 0;
+  let built = false;
+
+  /* ---- fundo estrelado leve (independente do starfield principal) ---- */
+  let bgW, bgH, bgStars = [], bgRunning = false;
+  function bgResize(){ bgW = bgCanvas.width = window.innerWidth; bgH = bgCanvas.height = window.innerHeight; }
+  function bgInit(){
+    bgStars = [];
+    for(let i=0;i<140;i++){
+      bgStars.push({
+        x: Math.random()*bgW, y: Math.random()*bgH,
+        r: Math.random()*1.3+0.2, a: Math.random(),
+        s: Math.random()*0.01+0.003, d: Math.random()>0.5?1:-1
+      });
+    }
+  }
+  function bgLoop(){
+    if(!bgRunning) return;
+    bgCtx.clearRect(0,0,bgW,bgH);
+    bgStars.forEach(s=>{
+      s.a += s.s*s.d;
+      if(s.a>=1||s.a<=0.1) s.d*=-1;
+      bgCtx.beginPath(); bgCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      bgCtx.fillStyle = `rgba(230,220,255,${s.a})`; bgCtx.fill();
+    });
+    requestAnimationFrame(bgLoop);
+  }
+  window.addEventListener('resize', ()=>{ if(bgRunning){ bgResize(); bgInit(); } });
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function buildGrid(){
+    grid.innerHTML = '';
+    if(!PHOTOS.length){
+      grid.innerHTML = `
+        <div class="g-empty">
+          <div class="g-empty-icon">✦ 🌌 ✦</div>
+          Este espaço está esperando pelas nossas fotos.<br>
+          Assim que forem adicionadas, elas vão brilhar aqui.
+        </div>`;
+      hint.textContent = '';
+      return;
+    }
+    hint.textContent = 'toque em uma foto para abrir em tela cheia';
+    PHOTOS.forEach((p, i)=>{
+      const card = document.createElement('div');
+      card.className = 'g-card';
+      card.style.animationDelay = (i * 0.06) + 's';
+      card.innerHTML = `
+        <div class="g-pin"></div>
+        <div class="g-photo-wrap">
+          <img src="${p.src}" alt="${escapeHtml(p.caption || 'foto da galeria')}" loading="lazy">
+          <div class="g-shine"></div>
+        </div>
+        ${p.caption ? `<div class="g-caption">${escapeHtml(p.caption)}</div>` : ''}
+      `;
+      card.addEventListener('click', ()=> openLightbox(i));
+      grid.appendChild(card);
+    });
+  }
+
+  function openLightbox(i){
+    if(!PHOTOS.length) return;
+    currentIndex = i;
+    updateLightbox();
+    lightbox.classList.add('active');
+    requestAnimationFrame(()=> lbInner.classList.add('show'));
+  }
+  function updateLightbox(){
+    const p = PHOTOS[currentIndex];
+    lbImg.src = p.src;
+    lbImg.alt = p.caption || '';
+    lbCaption.textContent = p.caption || '';
+    const multi = PHOTOS.length > 1;
+    lbPrev.style.display = multi ? 'flex' : 'none';
+    lbNext.style.display = multi ? 'flex' : 'none';
+  }
+  function closeLightbox(){
+    lbInner.classList.remove('show');
+    setTimeout(()=> lightbox.classList.remove('active'), 300);
+  }
+
+  lbPrev.addEventListener('click', ()=>{
+    currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
+    updateLightbox();
+  });
+  lbNext.addEventListener('click', ()=>{
+    currentIndex = (currentIndex + 1) % PHOTOS.length;
+    updateLightbox();
+  });
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) closeLightbox(); });
+
+  document.addEventListener('keydown', (e)=>{
+    if(lightbox.classList.contains('active')){
+      if(e.key === 'Escape') closeLightbox();
+      if(e.key === 'ArrowLeft' && PHOTOS.length>1){ currentIndex=(currentIndex-1+PHOTOS.length)%PHOTOS.length; updateLightbox(); }
+      if(e.key === 'ArrowRight' && PHOTOS.length>1){ currentIndex=(currentIndex+1)%PHOTOS.length; updateLightbox(); }
+    } else if(overlay.classList.contains('active') && e.key === 'Escape'){
+      closeGallery();
+    }
+  });
+
+  function openGallery(){
+    if(!built){ buildGrid(); built = true; }
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    bgResize(); bgInit(); bgRunning = true; requestAnimationFrame(bgLoop);
+    document.querySelectorAll('#galleryGrid .g-card').forEach(c=>{
+      c.style.animation = 'none'; void c.offsetWidth; c.style.animation = '';
+    });
+  }
+  function closeGallery(){
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    bgRunning = false;
+  }
+
+  fab.addEventListener('click', openGallery);
+  closeBtn.addEventListener('click', closeGallery);
 })();
 </script>
 </body>
