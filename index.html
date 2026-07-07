@@ -714,10 +714,12 @@
   }
   .g-card img {
     width: 100%; height: 100%; object-fit: cover; display: block;
+    border-radius: 4px;
     filter: saturate(0.96) contrast(1.02);
   }
   .g-card .g-shine {
     position: absolute; inset: 0;
+    border-radius: 4px;
     background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 45%);
     pointer-events: none;
   }
@@ -2620,8 +2622,8 @@ async function startSecretJourney(e) {
    { src: 'assets/galeria/foto1.jpg', caption: 'Nosso primeiro encontro' },
 */
 const PHOTOS = [
-  { src: 'assets/galeria/2026-07-02 at 04.38.09.jpeg', caption: '' },
-  { src: 'assets/galeria/2026-07-02 at 04.38.13.jpeg', caption: '' },
+  { src: 'assets/galeria/2026-07-02 at 04.38.09.jpeg', caption: '2026-07-02 at 04.38.09' },
+  { src: 'assets/galeria/2026-07-02 at 04.38.13.jpeg', caption: '2026-07-02 at 04.38.13' },
 ];
 
 (function(){
